@@ -14,10 +14,6 @@ public class PropertyReader {
         return Browser.valueOf(getProperty("browser"));
     }
 
-    public static Browser getBrowser() {
-        return Browser.valueOf(getProperty("browser"));
-    }
-
     private static String getProperty(String propertyName) {
         if (System.getProperty(propertyName) == null) {
             return getPropertyFromFile(propertyName);

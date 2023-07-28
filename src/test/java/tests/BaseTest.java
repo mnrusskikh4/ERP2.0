@@ -1,6 +1,7 @@
 package tests;
 
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import utils.DriverFactory;
 import utils.PropertyReader;
@@ -14,5 +15,8 @@ public abstract class BaseTest {
         driver = DriverFactory.getDriver(PropertyReader.getBrowser());
         driver.get(PropertyReader.getUrl());
     }
-
+    @AfterClass
+    public void tearDown() {
+        driver.quit();
+    }
 }
