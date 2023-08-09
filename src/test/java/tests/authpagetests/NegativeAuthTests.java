@@ -1,48 +1,12 @@
 package tests.authpagetests;
 
-import base.BaseTest;
+import base.TestUtilities;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class NegativeAuthTests extends BaseTest {
-
-    WebDriver driver;
-
-
-    @Parameters({ "browser" })
-    @BeforeMethod
-    private void setUp(@Optional("chrome") String browser) {
-        // Create driver
-        System.out.println("Create driver: " + browser);
-
-        switch (browser) {
-            case "chrome":
-                System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                driver = new ChromeDriver();
-                break;
-
-            case "edge":
-                System.setProperty("webdriver.msedge.driver", "src/test/resources/msedgedriver.exe");
-                driver = new EdgeDriver();
-                break;
-
-            default:
-                System.out.println("Do not know how to start: " + browser + ", starting chrome.");
-                System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-                driver = new ChromeDriver();
-                break;
-        }
-        driver.manage().window().maximize();
-    }
-
+public class NegativeAuthTests extends TestUtilities {
 
     @Parameters({ "username", "password", "expectedMessage" })
     @Test(priority = 1)
@@ -69,11 +33,5 @@ public class NegativeAuthTests extends BaseTest {
         Assert.assertTrue(actualErrorMessage.contains(expectedErrorMessage),
                 "actualErrorMessage does not contain expectedErrorMessage\nexpectedErrorMessage: "
                         + expectedErrorMessage + "\nactualErrorMessage: " + actualErrorMessage);
-    }
-    @AfterMethod
-    private void tearDown() {
-        System.out.println("Close driver");
-        // Close browser
-        driver.quit();
     }
 }
