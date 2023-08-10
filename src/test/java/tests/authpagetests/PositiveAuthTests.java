@@ -7,17 +7,16 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import pages.AuthPageObject;
 
 public class PositiveAuthTests extends TestUtilities {
     @Test
     public void logInTest() {
-        System.out.println("Starting logIn test");
+        log.info("Starting logIn test");
 
         // open main page
-        String url = "http://the-internet.herokuapp.com/";
-        driver.get(url);
-        System.out.println("Main page is opened.");
-
+        AuthPageObject authPage = new AuthPageObject(driver, log);
+        authPage.openPage();
         // Click on Form Authentication link
         driver.findElement(By.linkText("Form Authentication")).click();
 
@@ -25,7 +24,7 @@ public class PositiveAuthTests extends TestUtilities {
         driver.findElement(By.id("username")).sendKeys("tomsmith");
         driver.findElement(By.id("password")).sendKeys("SuperSecretPassword!");
 
-        WebDriverWait wait = new WebDriverWait(driver,10);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
 
         sleep(3000);
 

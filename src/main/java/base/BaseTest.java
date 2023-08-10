@@ -12,6 +12,7 @@ import org.testng.annotations.Parameters;
 public class BaseTest {
 
     protected WebDriver driver;
+    protected Logger log;
 
     @Parameters({"browser"})
     @BeforeMethod(alwaysRun = true)
@@ -19,16 +20,15 @@ public class BaseTest {
         String testName = ctx.getCurrentXmlTest().getName();
         log = LogManager.getLogger(testName);
 
-        BrowserDriverFactory factory = new BrowserDriverFactory(browser);
+        BrowserDriverFactory factory = new BrowserDriverFactory(browser, log);
         driver = factory.createDriver();
     }
         driver.manage().window().maximize();
 
-}
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
-        System.out.println("Close driver");
+        log.info("Close driver");
         // Close browser
         driver.quit();
     }

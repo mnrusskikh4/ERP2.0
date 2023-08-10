@@ -1,19 +1,22 @@
 package base;
 
+import org.apache.logging.log4j.core.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 public class BrowserDriverFactory {
     private ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
     private String browser;
+    private Logger log;
 
-    public BrowserDriverFactory(String browser) {
+    public BrowserDriverFactory(String browser, Logger log) {
         this.browser = browser.toLowerCase();
+        this.log = log;
     }
 
     public WebDriver createDriver() {
         // Create driver
-        System.out.println("Create driver: " + browser);
+        log.info("Create driver: " + browser);
 
         switch (browser) {
             case "chrome":
