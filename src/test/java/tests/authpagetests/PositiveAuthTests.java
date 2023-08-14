@@ -16,7 +16,7 @@ public class PositiveAuthTests extends TestUtilities {
 
         // open main page
         AuthPageObject authPage = new AuthPageObject(driver, log);
-        authPage.openPage();
+        authPage.openPage;
         // Click on Form Authentication link
         driver.findElement(By.linkText("Form Authentication")).click();
 

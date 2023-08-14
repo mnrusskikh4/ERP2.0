@@ -22,8 +22,9 @@ public class BaseTest {
 
         BrowserDriverFactory factory = new BrowserDriverFactory(browser, log);
         driver = factory.createDriver();
-    }
+
         driver.manage().window().maximize();
+    }
 
 
     @AfterMethod(alwaysRun = true)
