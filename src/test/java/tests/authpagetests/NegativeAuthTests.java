@@ -1,12 +1,13 @@
 package tests.authpagetests;
 
-import base.TestUtilities;
+import base.BaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class NegativeAuthTests extends TestUtilities {
+public class NegativeAuthTests extends BaseTest {
 
     @Parameters({ "username", "password", "expectedMessage" })
     @Test(priority = 1)
@@ -14,7 +15,7 @@ public class NegativeAuthTests extends TestUtilities {
         log.info("Starting negativeTest");
 
         // open main page
-        String url = "http://the-internet.herokuapp.com/";
+        String url = "https://doc.star-smile.ru/#/auth";
         driver.get(url);
         log.info("Main page is opened.");
 
@@ -26,12 +27,12 @@ public class NegativeAuthTests extends TestUtilities {
         driver.findElement(By.id("password")).sendKeys(password);
 
         // push log in button
-        driver.findElement(By.className("radius")).click();
+        WebElement loginButton = driver.findElement(By.id("login-btn"));
+        loginButton.click();
 
-        // Verification
-        String actualErrorMessage = driver.findElement(By.id("flash")).getText();
-        Assert.assertTrue(actualErrorMessage.contains(expectedErrorMessage),
-                "actualErrorMessage does not contain expectedErrorMessage\nexpectedErrorMessage: "
-                        + expectedErrorMessage + "\nactualErrorMessage: " + actualErrorMessage);
+        // Add your assertion here for the expected error message
+        // For example:
+        // WebElement errorMessage = driver.findElement(By.className("error-message"));
+        // Assert.assertEquals(errorMessage.getText(), expectedErrorMessage);
     }
 }

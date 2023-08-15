@@ -8,7 +8,7 @@
         <parameter name="expectedMessage" value="Your username is invalid!"></parameter>
         <parameter name="browser" value="chrome"></parameter>
         <classes>
-            <class name="com.herokuapp.theinternet.loginpagetests.NegativeLogInTests">
+            <class name="tests.authpagetests.NegativeAuthTests">
             </class>
         </classes>
     </test>
@@ -17,9 +17,9 @@
         <parameter name="username" value="incorrectUsername"></parameter>
         <parameter name="password" value="SuperSecretPassword!"></parameter>
         <parameter name="expectedMessage" value="Your username is invalid!"></parameter>
-        <parameter name="browser" value="firefox"></parameter>
+        <parameter name="browser" value="edge"></parameter>
         <classes>
-            <class name="com.herokuapp.theinternet.loginpagetests.NegativeLogInTests">
+            <class name="tests.authpagetests.NegativeAuthTests">
             </class>
         </classes>
     </test>
@@ -30,7 +30,7 @@
         <parameter name="expectedMessage" value="Your password is invalid!"></parameter>
         <parameter name="browser" value="chrome"></parameter>
         <classes>
-            <class name="com.herokuapp.theinternet.loginpagetests.NegativeLogInTests">
+            <class name="tests.authpagetests.NegativeAuthTests">
             </class>
         </classes>
     </test>
@@ -39,9 +39,9 @@
         <parameter name="username" value="tomsmith"></parameter>
         <parameter name="password" value="incorrectPassword"></parameter>
         <parameter name="expectedMessage" value="Your password is invalid!"></parameter>
-        <parameter name="browser" value="firefox"></parameter>
+        <parameter name="browser" value="edge"></parameter>
         <classes>
-            <class name="com.herokuapp.theinternet.loginpagetests.NegativeLogInTests">
+            <class name="tests.authpagetests.NegativeAuthTests">
             </class>
         </classes>
     </test>
