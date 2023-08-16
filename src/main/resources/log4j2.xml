@@ -8,7 +8,7 @@
     </Appenders>
 
     <Loggers>
-        <Root level="TRACE">
+        <Root level="ALL">
             <AppenderRef ref="ConsoleAppender" />
         </Root>
     </Loggers>
