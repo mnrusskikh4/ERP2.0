@@ -15,7 +15,7 @@ import java.time.Duration;
 public class PositiveAuthTests extends BaseTest {
     @Test
     public void logInTest() {
-        Logger log = (Logger) LogManager.getLogger(PositiveAuthTests.class);
+        Logger log = LogManager.getLogger(PositiveAuthTests.class);
         log.info("Starting logIn test");
 
         // open main page
@@ -32,6 +32,5 @@ public class PositiveAuthTests extends BaseTest {
         WebElement logInButtonLocator = driver.findElement(By.id("login-btn"));
         wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
         logInButtonLocator.click();
-
     }
 }
