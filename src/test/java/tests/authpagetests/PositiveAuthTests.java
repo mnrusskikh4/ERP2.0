@@ -1,6 +1,7 @@
 package tests.authpagetests;
 
-import base.BaseTest;
+
+import base.TestUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -12,7 +13,7 @@ import pages.AuthPageObject;
 
 import java.time.Duration;
 
-public class PositiveAuthTests extends BaseTest {
+public class PositiveAuthTests extends TestUtilities {
     @Test
     public void logInTest() {
         Logger log = LogManager.getLogger(PositiveAuthTests.class);

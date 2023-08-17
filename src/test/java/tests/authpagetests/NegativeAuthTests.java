@@ -1,12 +1,13 @@
 package tests.authpagetests;
 
-import base.BaseTest;
+
+import base.TestUtilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class NegativeAuthTests extends BaseTest {
+public class NegativeAuthTests extends TestUtilities {
 
     @Parameters({ "username", "password", "expectedMessage" })
     @Test(priority = 1)
