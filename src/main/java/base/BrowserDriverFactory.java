@@ -11,7 +11,7 @@ public class BrowserDriverFactory {
     private String browser;
     private Logger log = LogManager.getLogger(BrowserDriverFactory.class);
 
-    public BrowserDriverFactory(String browser) {
+    public BrowserDriverFactory(String browser, Logger log) {
         this.browser = browser.toLowerCase();
     }
 

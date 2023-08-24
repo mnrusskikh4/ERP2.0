@@ -12,7 +12,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-@Listeners({ com.herokuapp.theinternet.base.TestListener.class })
+@Listeners({ base.TestListener.class })
 public class BaseTest {
 
     protected WebDriver driver;
@@ -30,13 +30,7 @@ public class BaseTest {
         log = LogManager.getLogger(testName);
 
         BrowserDriverFactory factory = new BrowserDriverFactory(browser, log);
-        if (profile != null) {
-            driver = factory.createChromeWithProfile(profile);
-        } else if (deviceName != null) {
-            driver = factory.createChromeWithMobileEmulation(deviceName);
-        } else {
-            driver = factory.createDriver();
-        }
+        driver = factory.createDriver();
 
         driver.manage().window().maximize();
 
