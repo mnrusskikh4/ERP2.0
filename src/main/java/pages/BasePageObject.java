@@ -2,6 +2,7 @@ package pages;
 
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 
 public class BasePageObject {
@@ -29,6 +31,11 @@ public class BasePageObject {
     /** Find element using given locator */
     protected WebElement find(By locator) {
         return driver.findElement(locator);
+    }
+
+    /** Find all elements using given locator */
+    protected List<WebElement> findAll(By locator) {
+        return driver.findElements(locator);
     }
 
     /**
@@ -69,12 +76,17 @@ public class BasePageObject {
     /**
      * Wait for given number of seconds for element with given locator to be visible
      * on the page
-     * @param locator The locator of the element
-     * @param timeOutInSeconds The timeout in seconds
      */
-    private void waitForVisibilityOf(By locator, Integer... timeOutInSeconds) {
-        int timeout = (timeOutInSeconds.length > 0 && timeOutInSeconds[0] != null) ? timeOutInSeconds[0] : 30;
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    protected void waitForVisibilityOf(By locator, Integer... timeOutInSeconds) {
+        int attempts = 0;
+        while (attempts < 2) {
+            try {
+                waitFor(ExpectedConditions.visibilityOfElementLocated(locator),
+                        (timeOutInSeconds.length > 0 ? timeOutInSeconds[0] : null));
+                break;
+            } catch (StaleElementReferenceException e) {
+            }
+            attempts++;
+        }
     }
 }

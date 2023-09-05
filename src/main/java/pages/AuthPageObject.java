@@ -1,6 +1,5 @@
 package pages;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,16 +16,15 @@ public class AuthPageObject extends BasePageObject {
         super(driver, log);
     }
 
+    /** Open AuthPage with it's url */
     public void openPage() {
-        String url = "https://doc.star-smile.ru/#/auth";
-        driver.get(url);
-        Logger log = LogManager.getLogger(AuthPageObject.class);
-        log.info("Main page is opened.");
+        log.info("Opening page: " + pageUrl);
+        openUrl(pageUrl);
+        log.info("Page opened!");
     }
 
     /** Execute log in */
     public DoctorsAccountPage logIn(String username, String password) {
-        Logger log = LogManager.getLogger(AuthPageObject.class);
         log.info("Executing LogIn with username [{}] and password [{}]", username, password);
         type(username, usernameLocator);
         type(password, passwordLocator);

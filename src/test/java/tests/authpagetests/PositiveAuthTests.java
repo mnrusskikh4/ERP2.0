@@ -22,6 +22,7 @@ public class PositiveAuthTests extends TestUtilities {
         // open main page
         AuthPageObject authPage = new AuthPageObject(driver, log);
         authPage.openPage();
+        takeScreenshot("AuthPage opened");
 
         // enter username and password
         driver.findElement(By.id("username")).sendKeys("tomsmith");
