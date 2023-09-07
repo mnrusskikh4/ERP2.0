@@ -2,8 +2,6 @@ package tests.authpagetests;
 
 
 import base.TestUtilities;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -15,14 +13,12 @@ import java.time.Duration;
 
 public class PositiveAuthTests extends TestUtilities {
     @Test
-    public void logInTest() {
-        Logger log = LogManager.getLogger(PositiveAuthTests.class);
-        log.info("Starting logIn test");
+    public void positiveAuthTest() {
+        log.info("Starting positiveTest");
 
         // open main page
         AuthPageObject authPage = new AuthPageObject(driver, log);
         authPage.openPage();
-        takeScreenshot("AuthPage opened");
 
         // enter username and password
         driver.findElement(By.id("username")).sendKeys("tomsmith");
@@ -34,5 +30,6 @@ public class PositiveAuthTests extends TestUtilities {
         WebElement logInButtonLocator = driver.findElement(By.id("login-btn"));
         wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
         logInButtonLocator.click();
+        takeScreenshot("Login button pushed");
     }
 }

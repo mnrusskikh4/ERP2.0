@@ -5,8 +5,13 @@ import base.CsvDataProviders;
 import base.TestUtilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
+import pages.AuthPageObject;
 
+
+import java.time.Duration;
 import java.util.Map;
 
 public class NegativeAuthTests extends TestUtilities {
@@ -14,6 +19,7 @@ public class NegativeAuthTests extends TestUtilities {
 
     @Test(priority = 1, dataProvider = "csvReader", dataProviderClass = CsvDataProviders.class)
     public void negativeAuthTest( Map<String, String> testData) {
+        log.info("Starting negativeTest");
         //Data
         String no = testData.get("no");
         String username = testData.get("username");
@@ -21,26 +27,23 @@ public class NegativeAuthTests extends TestUtilities {
         String expectedMessage = testData.get("expectedMessage");
         String description = testData.get("description");
 
-        log.info("Starting negativeTest");
-
         // open main page
-        String url = "https://doc.star-smile.ru/#/auth";
-        driver.get(url);
-        log.info("Main page is opened.");
-
-        // Click on Form Authentication link
-        driver.findElement(By.linkText("Form Authentication")).click();
+        AuthPageObject authPage = new AuthPageObject(driver, log);
+        authPage.openPage();
 
         // enter username and password
         driver.findElement(By.id("username")).sendKeys(username);
         driver.findElement(By.id("password")).sendKeys(password);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
         // push log in button
         WebElement loginButton = driver.findElement(By.id("login-btn"));
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         loginButton.click();
+        takeScreenshot("Login button pushed");
 
-        // Add your assertion here for the expected error message
-        // For example:
+
         // WebElement errorMessage = driver.findElement(By.className("error-message"));
         // Assert.assertEquals(errorMessage.getText(), expectedErrorMessage);
     }
