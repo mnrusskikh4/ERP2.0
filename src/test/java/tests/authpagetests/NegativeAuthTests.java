@@ -7,9 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.AuthPageObject;
-
 
 import java.time.Duration;
 import java.util.Map;
@@ -32,8 +32,21 @@ public class NegativeAuthTests extends TestUtilities {
         authPage.openPage();
 
         // enter username and password
-        driver.findElement(By.id("username")).sendKeys(username);
-        driver.findElement(By.id("password")).sendKeys(password);
+        // Проверка на пустые значения username и password
+        if (username == null || username.isEmpty()) {
+            // Вывод ошибки или выполнение других действий по вашему усмотрению
+            System.out.println("Ошибка: Поле 'username' пустое или null");
+        } else {
+            driver.findElement(By.id("username")).sendKeys(username);
+        }
+
+        if (password == null || password.isEmpty()) {
+            // Вывод ошибки или выполнение других действий по вашему усмотрению
+            System.out.println("Ошибка: Поле 'password' пустое или null");
+        } else {
+            driver.findElement(By.id("password")).sendKeys(password);
+        }
+
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -43,8 +56,11 @@ public class NegativeAuthTests extends TestUtilities {
         loginButton.click();
         takeScreenshot("Login button pushed");
 
-
-        // WebElement errorMessage = driver.findElement(By.className("error-message"));
-        // Assert.assertEquals(errorMessage.getText(), expectedErrorMessage);
+        // Verification
+        String expectedErrorMessage = "Неверный логин или пароль";
+        String authErrorMessage = authPage.getErrorMessageText();
+        Assert.assertTrue(authErrorMessage.contains(expectedErrorMessage),
+                "authErrorMessage does not contain expectedErrorMessage\nexpectedErrorMessage: "
+                        + expectedErrorMessage + "\nauthErrorMessage: " + authErrorMessage);
     }
 }

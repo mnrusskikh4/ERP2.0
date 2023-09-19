@@ -3,6 +3,11 @@ package pages;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class AuthPageObject extends BasePageObject {
 
@@ -32,5 +37,12 @@ public class AuthPageObject extends BasePageObject {
         return new DoctorsAccountPage(driver, log);
     }
 
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Максимальное ожидание в течение 10 секунд
+    By xpathSelector = By.xpath("//div[@class='v-snack__wrapper v-sheet theme--dark' and contains(@style, 'display: none;')]//div[@class='v-snack__content' and text()='Неверный логин или пароль']");
+    WebElement errorMessageElement = wait.until(ExpectedConditions.presenceOfElementLocated(xpathSelector));
+
+
+    public String getErrorMessageText() {
+    }
 }
 
