@@ -1,6 +1,5 @@
 package base;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,10 +8,11 @@ import org.openqa.selenium.edge.EdgeDriver;
 public class BrowserDriverFactory {
     private ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
     private String browser;
-    private Logger log = LogManager.getLogger(BrowserDriverFactory.class);
 
+    private Logger log;
     public BrowserDriverFactory(String browser, Logger log) {
         this.browser = browser.toLowerCase();
+        this.log = log;
     }
 
     public WebDriver createDriver() {

@@ -2,7 +2,17 @@
 
 <suite name="PositiveAuthTestsSuite" verbose="1">
 
-    <test name="PositiveLogInTest">
+    <!-- Chrome Test -->
+    <test name="PositiveLogInTestChrome">
+        <parameter name="browser" value="chrome" />
+        <classes>
+            <class name="tests.authpagetests.PositiveAuthTests" />
+        </classes>
+    </test>
+
+    <!-- Edge Test -->
+    <test name="PositiveLogInTestEdge">
+        <parameter name="browser" value="edge" />
         <classes>
             <class name="tests.authpagetests.PositiveAuthTests" />
         </classes>

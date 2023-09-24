@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 public class BasePageObject {
@@ -23,23 +24,30 @@ public class BasePageObject {
         this.log = log;
     }
 
-    /** Open page with given URL */
+    /**
+     * Open page with given URL
+     */
     protected void openUrl(String url) {
         driver.get(url);
     }
 
-    /** Find element using given locator */
+    /**
+     * Find element using given locator
+     */
     protected WebElement find(By locator) {
         return driver.findElement(locator);
     }
 
-    /** Find all elements using given locator */
+    /**
+     * Find all elements using given locator
+     */
     protected List<WebElement> findAll(By locator) {
         return driver.findElements(locator);
     }
 
     /**
      * Click on element with given locator when it's visible
+     *
      * @param locator The locator of the element
      */
     protected void click(By locator) {
@@ -49,7 +57,8 @@ public class BasePageObject {
 
     /**
      * Type given text into element with given locator
-     * @param text The text to type
+     *
+     * @param text    The text to type
      * @param locator The locator of the element
      */
     protected void type(String text, By locator) {
@@ -57,14 +66,17 @@ public class BasePageObject {
         find(locator).sendKeys(text);
     }
 
-    /** Get URL of current page from browser */
+    /**
+     * Get URL of current page from browser
+     */
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
     }
 
     /**
      * Wait for specific ExpectedCondition for the given amount of time in seconds
-     * @param condition The expected condition to wait for
+     *
+     * @param condition        The expected condition to wait for
      * @param timeOutInSeconds The timeout in seconds
      */
     private void waitFor(ExpectedCondition<WebElement> condition, Integer timeOutInSeconds) {
@@ -87,6 +99,15 @@ public class BasePageObject {
             } catch (StaleElementReferenceException e) {
             }
             attempts++;
+        }
+    }
+
+    protected boolean isElementPresent(By locator) {
+        try {
+            driver.findElement(locator);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
         }
     }
 }

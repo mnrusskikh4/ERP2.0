@@ -32,7 +32,7 @@ public class CsvDataProviders {
                 String[] dataParts;
                 while ((dataParts = reader.readNext()) != null) {
                     if (dataParts.length != keys.length) {
-                        // Можно обработать случай, когда количество столбцов не соответствует количеству ключей
+                        // Обработка случая, когда количество столбцов не соответствует количеству ключей
                         throw new CsvValidationException("Number of columns doesn't match number of keys.");
                     }
                     Map<String, String> testData = new HashMap<String, String>();
