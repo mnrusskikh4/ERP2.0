@@ -2,13 +2,13 @@
 
 <suite name="NegativeAuthTestsSuite" verbose="1" parallel="tests" thread-count="4">
 
-    <test name="NegativeAuthTest-CH">
-        <parameter name="browser" value="chrome"></parameter>
-        <classes>
-            <class name="tests.authpagetests.NegativeAuthTests">
-            </class>
-        </classes>
-    </test>
+<test name="NegativeAuthTest-CH">
+    <parameter name="browser" value="chrome"></parameter>
+    <classes>
+        <class name="tests.authpagetests.NegativeAuthTests">
+        </class>
+    </classes>
+</test>
 
     <!--
     <test name="NegativeUsernameTest-CH">

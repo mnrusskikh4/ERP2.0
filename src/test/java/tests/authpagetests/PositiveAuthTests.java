@@ -6,6 +6,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -32,6 +33,10 @@ public class PositiveAuthTests extends TestUtilities {
 
         clickLoginButton();
 
+        safeSleep(2000);  // Ожидание перед проверкой ошибки
+
+        checkForErrorMessageOnAuthPage();
+
         // Переход на новую страницу и ожидание ее загрузки
         DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
         doctorsAccountPage.waitForPageToLoad();
@@ -50,7 +55,7 @@ public class PositiveAuthTests extends TestUtilities {
     @Step("Внесение валидных данных логин и пароль")
     public void enterLoginAndPass() {
         BaseTest.getDriver().findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
-        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O2");
+        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O23");
     }
 
     @Step("Переход в кабинет доктора по кнопке логин")
@@ -83,6 +88,18 @@ public class PositiveAuthTests extends TestUtilities {
 
     private void scrollToElement(WebElement element) {
         ((JavascriptExecutor) BaseTest.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
+    }
+    @Step("Проверка сообщения об ошибке на странице AuthPageObject")
+    public void checkForErrorMessageOnAuthPage() {
+        By errorMessageLocator = By.xpath("//div[@role='status'][contains(@class, 'v-snack__content')][contains(text(), 'Неверный логин или пароль')]");
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(1));
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessageLocator));
+            String errorMessage = BaseTest.getDriver().findElement(errorMessageLocator).getText();
+            Assert.fail("Ошибка авторизации: " + errorMessage);  // Тест завершится неудачей
+        } catch (TimeoutException e) {
+            // Если сообщение об ошибке не появляется, то считаем, что авторизация прошла успешно.
+        }
     }
 
     private void safeSleep(long millis) {
