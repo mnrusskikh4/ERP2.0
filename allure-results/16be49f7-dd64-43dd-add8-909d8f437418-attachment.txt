@@ -1,0 +1,4 @@
+[[2023-09-25T14:07:01.813Z] [WARNING] https://doc.star-smile.ru/js/chunk-vendors.bffe727e.js 74:241774 "[Vuetify] [UPGRADE] 'v-content' is deprecated, use 'v-main' instead.\n\nfound in\n\n---> \u003CVMain>\n       \u003CVApp>\n         \u003CAuth>\n           \u003CApp>\n             \u003CRoot>", [2023-09-25T14:07:02.287Z] [SEVERE] https://doc.star-smile.ru/api/auth/login - Failed to load resource: the server responded with a status of 400 (), [2023-09-25T14:07:02.301Z] [SEVERE] https://doc.star-smile.ru/js/chunk-vendors.bffe727e.js 6:12040 Error: Request failed with status code 400
+    at A.exports (https://doc.star-smile.ru/js/chunk-vendors.bffe727e.js:7:70356)
+    at A.exports (https://doc.star-smile.ru/js/chunk-vendors.bffe727e.js:21:92326)
+    at h.onreadystatechange (https://doc.star-smile.ru/js/chunk-vendors.bffe727e.js:48:56979)]

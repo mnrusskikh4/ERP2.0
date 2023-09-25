@@ -1,14 +1,18 @@
 package base;
 
+import io.qameta.allure.Allure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.logging.LogType;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 public class TestListener implements ITestListener {
 
-    Logger log;
+    Logger log = LogManager.getLogger(TestListener.class);
     String testName;
     String testMethodName;
 
@@ -25,19 +29,14 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
+        captureScreenshotAndLogs();
         log.info("[Test " + testMethodName + " failed]");
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        // TODO Auto-generated method stub
-
+        captureScreenshotAndLogs();
+        log.info("[Test " + testMethodName + " skipped]");
     }
 
     @Override
@@ -52,4 +51,13 @@ public class TestListener implements ITestListener {
         log.info("[ALL " + testName + " FINISHED]");
     }
 
+    private void captureScreenshotAndLogs() {
+        // Захват скриншота и прикрепление к Allure-отчёту
+        byte[] screenshotBytes = ((TakesScreenshot) BaseTest.getDriver()).getScreenshotAs(OutputType.BYTES);
+        Allure.getLifecycle().addAttachment("Failure screenshot", "image/png", ".png", screenshotBytes);
+
+        // Получение логов браузера и прикрепление к Allure-отчёту
+        String browserLogs = BaseTest.getDriver().manage().logs().get(LogType.BROWSER).getAll().toString();
+        Allure.addAttachment("Browser logs", browserLogs);
+    }
 }

@@ -1,6 +1,9 @@
 package tests.authpagetests;
 
+import base.BaseTest;
 import base.TestUtilities;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -17,32 +20,23 @@ import java.time.Duration;
 public class PositiveAuthTests extends TestUtilities {
 
     @Test
+    @Description("Тест подключенных уведомлений по-умолчанию")
     public void positiveAuthTest() {
         log.info("Starting positiveTest");
 
         // open main page
-        AuthPageObject authPage = new AuthPageObject(driver, log);
+        AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
         authPage.openPage();
 
-        // enter username and password
-        driver.findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("k@O23");
+        enterLoginAndPass();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        // push log in button
-        WebElement logInButtonLocator = driver.findElement(By.id("login-btn"));
-        wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
-        logInButtonLocator.click();
-        takeScreenshot("Login button pushed");
+        clickLoginButton();
 
         // Переход на новую страницу и ожидание ее загрузки
-        DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(driver, log);
+        DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
         doctorsAccountPage.waitForPageToLoad();
 
-        // Проверка выпадающей иконки
-        boolean isIconPresent = doctorsAccountPage.isExpandMoreIconPresent();
-        Assert.assertTrue(isIconPresent, "Expand More icon is not present on the page");
+        checkExpandMoreIcon(doctorsAccountPage);
 
         // Добавляем ожидание перед созданием скриншота
         safeSleep(2000);
@@ -53,8 +47,29 @@ public class PositiveAuthTests extends TestUtilities {
         checkCheckboxes(doctorsProfilePage);
     }
 
+    @Step("Внесение валидных данных логин и пароль")
+    public void enterLoginAndPass() {
+        BaseTest.getDriver().findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
+        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O2");
+    }
+
+    @Step("Переход в кабинет доктора по кнопке логин")
+    public void clickLoginButton() {
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login-btn"));
+        wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
+        logInButtonLocator.click();
+        takeScreenshot("Login button pushed");
+    }
+
+    @Step("Обнаружение выпадающей кнопки Профиль/Выйти")
+    public void checkExpandMoreIcon(DoctorsAccountPage doctorsAccountPage) {
+        boolean isIconPresent = doctorsAccountPage.isExpandMoreIconPresent();
+        Assert.assertTrue(isIconPresent, "Expand More icon is not present on the page");
+    }
+    @Step("Проверка состояния чекбоксов")
     public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
-        // Проверка состояния чекбоксов
+
         Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
 
         // Скролл до элемента
@@ -67,7 +82,7 @@ public class PositiveAuthTests extends TestUtilities {
     }
 
     private void scrollToElement(WebElement element) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+        ((JavascriptExecutor) BaseTest.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
     private void safeSleep(long millis) {

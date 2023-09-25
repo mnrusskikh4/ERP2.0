@@ -1,16 +1,17 @@
 package base;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.testng.annotations.DataProvider;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class TestUtilities extends BaseTest {
 
@@ -25,7 +26,7 @@ public class TestUtilities extends BaseTest {
 
     /** Take screenshot */
     protected void takeScreenshot(String fileName) {
-        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File scrFile = ((TakesScreenshot) BaseTest.getDriver()).getScreenshotAs(OutputType.FILE);
         String path = System.getProperty("user.dir")
                 + File.separator + "test-output"
                 + File.separator + "screenshots"
@@ -54,7 +55,7 @@ public class TestUtilities extends BaseTest {
 
     /** Get logs from browser console */
     protected List<LogEntry> getBrowserLogs() {
-        LogEntries log = driver.manage().logs().get("browser");
+        LogEntries log = BaseTest.getDriver().manage().logs().get("browser");
         List<LogEntry> logList = log.getAll();
         return logList;
     }
