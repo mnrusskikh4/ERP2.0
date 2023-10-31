@@ -33,8 +33,6 @@ public class PositiveAuthTests extends TestUtilities {
 
         clickLoginButton();
 
-        safeSleep(2000);  // Ожидание перед проверкой ошибки
-
         checkForErrorMessageOnAuthPage();
 
         // Переход на новую страницу и ожидание ее загрузки
@@ -54,9 +52,17 @@ public class PositiveAuthTests extends TestUtilities {
 
     @Step("Внесение валидных данных логин и пароль")
     public void enterLoginAndPass() {
-        BaseTest.getDriver().findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
-        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O23");
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+
+        // Ожидание, пока элемент с id="username" станет видимым
+        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        usernameInput.sendKeys("awsavichev@gmail.com");
+
+        // Ожидание, пока элемент с id="password" станет видимым
+        WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+        passwordInput.sendKeys("k@O2");
     }
+
 
     @Step("Переход в кабинет доктора по кнопке логин")
     public void clickLoginButton() {

@@ -36,11 +36,14 @@ public class NegativeAuthTests extends TestUtilities {
         AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
         authPage.openPage();
 
-        BaseTest.getDriver().findElement(By.id("username")).sendKeys(username);
-        BaseTest.getDriver().findElement(By.id("password")).sendKeys(password);
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+
+        usernameInput.sendKeys(username);
+        passwordInput.sendKeys(password);
 
         // Clicking on login button
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
         WebElement loginButton = BaseTest.getDriver().findElement(By.id("login-btn"));
         wait.until(ExpectedConditions.elementToBeClickable(loginButton));
         loginButton.click();

@@ -25,6 +25,11 @@ public class AuthPageObject extends BasePageObject {
         openUrl(pageUrl);
         log.info("Page opened!");
     }
+    public void waitForLoginElementsToBeVisible() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameLocator));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(passwordLocator));
+    }
 
     public DoctorsAccountPage logIn(String username, String password) {
         log.info("Executing LogIn with username [{}] and password [{}]", username, password);
