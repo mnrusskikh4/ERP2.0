@@ -17,6 +17,7 @@ import pages.DoctorsProfilePage;
 
 import java.time.Duration;
 
+
 public class PositiveAuthTests extends TestUtilities {
 
     @Test
@@ -38,9 +39,6 @@ public class PositiveAuthTests extends TestUtilities {
 
         checkExpandMoreIcon(doctorsAccountPage);
 
-        // Добавляем ожидание перед созданием скриншота
-        safeSleep(2000);
-
         takeScreenshot("Expand More icon is present on the page");
 
         DoctorsProfilePage doctorsProfilePage = doctorsAccountPage.clickExpandMoreAndSelectProfile();
@@ -49,15 +47,16 @@ public class PositiveAuthTests extends TestUtilities {
 
     @Step("Внесение валидных данных логин и пароль")
     public void enterLoginAndPass() {
-        BaseTest.getDriver().findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
-        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O2");
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        WebElement usernameElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        usernameElement.sendKeys("awsavichev@gmail.com");
+        WebElement passwordElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
+        passwordElement.sendKeys("k@O23");
     }
 
     @Step("Переход в кабинет доктора по кнопке логин")
     public void clickLoginButton() {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
         WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login-btn"));
-        wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
         logInButtonLocator.click();
         takeScreenshot("Login button pushed");
     }
@@ -67,29 +66,14 @@ public class PositiveAuthTests extends TestUtilities {
         boolean isIconPresent = doctorsAccountPage.isExpandMoreIconPresent();
         Assert.assertTrue(isIconPresent, "Expand More icon is not present on the page");
     }
-    @Step("Проверка состояния чекбоксов")
-    public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
-
-        Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
-
-        // Скролл до элемента
-        scrollToElement(doctorsProfilePage.getFirstCheckboxElement());
-
-        // Добавляем ожидание перед созданием скриншота
-        safeSleep(2000);
-
-        takeScreenshot("checkboxesState");
-    }
-
-    private void scrollToElement(WebElement element) {
+    @Step("Скролл к элементу")
+    public void scrollToElement(WebElement element) {
+        // Прокрутка к элементу с использованием JavaScript
         ((JavascriptExecutor) BaseTest.getDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
     }
-
-    private void safeSleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  // или другая ваша обработка
-        }
+    @Step("Проверка состояния чекбоксов")
+    public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
+        Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
+        takeScreenshot("checkboxesState");
     }
 }
