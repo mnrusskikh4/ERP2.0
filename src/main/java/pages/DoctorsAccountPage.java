@@ -12,7 +12,7 @@ import java.time.Duration;
 
 public class DoctorsAccountPage extends BasePageObject {
 
-    private By expandMoreIconLocator = By.xpath("//i[@class='v-icon notranslate material-icons theme--light']");
+    private By expandMoreIconLocator = By.xpath("//*[contains(@class, 'ml-5')]\n");
 
     public DoctorsAccountPage (WebDriver driver, Logger log) {
             super(driver, log);
@@ -35,7 +35,7 @@ public class DoctorsAccountPage extends BasePageObject {
 
     public DoctorsProfilePage clickExpandMoreAndSelectProfile() {
         // Нажимаем на кнопку "expand_more"
-        WebElement expandMoreButton = driver.findElement(By.xpath("//i[contains(@class, 'material-icons') and text()='expand_more']"));
+        WebElement expandMoreButton = driver.findElement(By.xpath("//*[contains(@class, 'ml-5')]\n"));
         expandMoreButton.click();
 
         // Ожидаем, пока не станет видимым элемент "Профиль" и кликаем по нему

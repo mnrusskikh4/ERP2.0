@@ -13,7 +13,7 @@ import java.util.List;
 public class DoctorsProfilePage extends BasePageObject {
     private WebDriver driver;
 
-    private By checkboxes = By.xpath("//div[@class='v-input--selection-controls__ripple' and @style='color: rgb(133, 120, 215); caret-color: rgb(133, 120, 215);']");
+    private By checkboxes = By.xpath("//input[@id='input-14322' and @role='checkbox' and @aria-checked='true']");
 
     public DoctorsProfilePage(WebDriver driver, Logger log) {
         super(driver, log);
