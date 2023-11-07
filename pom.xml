@@ -9,11 +9,11 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <testng-version>7.7.0</testng-version>
+        <testng-version>7.0.0</testng-version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <aspectj.version>1.9.19</aspectj.version>
         <allure-testng.version>2.23.0</allure-testng.version>
@@ -64,8 +64,8 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v119</artifactId>
-            <version>4.15.0</version>
+            <artifactId>selenium-devtools-v116</artifactId>
+            <version>4.12.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -113,8 +113,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

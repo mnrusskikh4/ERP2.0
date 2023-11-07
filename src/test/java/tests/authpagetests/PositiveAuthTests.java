@@ -49,34 +49,26 @@ public class PositiveAuthTests extends TestUtilities {
 
     @Step("Внесение валидных данных логин и пароль")
     public void enterLoginAndPass() {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
-        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        WebElement passwordInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
-
-        usernameInput.sendKeys("awsavichev@gmail.com");
-        passwordInput.sendKeys("k@O23");
+        BaseTest.getDriver().findElement(By.id("username")).sendKeys("awsavichev@gmail.com");
+        BaseTest.getDriver().findElement(By.id("password")).sendKeys("k@O2");
     }
 
     @Step("Переход в кабинет доктора по кнопке логин")
     public void clickLoginButton() {
         WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
-        WebElement logInButtonLocator = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-btn")));
+        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login-btn"));
+        wait.until(ExpectedConditions.elementToBeClickable(logInButtonLocator));
         logInButtonLocator.click();
         takeScreenshot("Login button pushed");
     }
 
     @Step("Обнаружение выпадающей кнопки Профиль/Выйти")
     public void checkExpandMoreIcon(DoctorsAccountPage doctorsAccountPage) {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
-        WebElement expandMoreIcon = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ml-5")));
-        boolean isIconPresent = expandMoreIcon.isDisplayed();
+        boolean isIconPresent = doctorsAccountPage.isExpandMoreIconPresent();
         Assert.assertTrue(isIconPresent, "Expand More icon is not present on the page");
     }
-
     @Step("Проверка состояния чекбоксов")
     public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOf(doctorsProfilePage.getFirstCheckboxElement()));
 
         Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
 
