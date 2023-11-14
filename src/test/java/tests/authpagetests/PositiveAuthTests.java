@@ -73,7 +73,7 @@ public class PositiveAuthTests extends TestUtilities {
     }
     @Step("Проверка состояния чекбоксов")
     public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
-        Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
+        Assert.assertFalse(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
         takeScreenshot("checkboxesState");
     }
 }

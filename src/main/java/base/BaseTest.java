@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
@@ -41,10 +42,19 @@ public class BaseTest {
     }
 
     @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        if (getDriver() != null) {
-            log.info("Close driver");
-            getDriver().quit();
+    public void tearDown(ITestResult result) {
+        try {
+            if (result.getStatus() == ITestResult.FAILURE || result.getStatus() == ITestResult.SKIP) {
+                TestListener.captureScreenshotAndLogs();
+            }
+        } catch (Exception e) {
+            log.error("Error while capturing screenshot or logs", e);
+        } finally {
+            if (getDriver() != null) {
+                log.info("Close driver");
+                getDriver().quit();
+            }
         }
     }
+
 }
