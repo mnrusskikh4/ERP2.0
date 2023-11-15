@@ -56,7 +56,7 @@ public class PositiveAuthTests extends TestUtilities {
 
     @Step("Переход в кабинет доктора по кнопке логин")
     public void clickLoginButton() {
-        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login-btn"));
+        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login"));
         logInButtonLocator.click();
         takeScreenshot("Login button pushed");
     }
@@ -73,7 +73,7 @@ public class PositiveAuthTests extends TestUtilities {
     }
     @Step("Проверка состояния чекбоксов")
     public void checkCheckboxes(DoctorsProfilePage doctorsProfilePage) {
-        Assert.assertFalse(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
+        Assert.assertTrue(doctorsProfilePage.areAllCheckboxesSelected(), "Checkboxes are not selected");
         takeScreenshot("checkboxesState");
     }
 }

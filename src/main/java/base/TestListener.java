@@ -1,7 +1,6 @@
 package base;
 
 import io.qameta.allure.Allure;
-import io.qameta.allure.Attachment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -51,7 +50,7 @@ public class TestListener implements ITestListener {
     public void onFinish(ITestContext context) {
         log.info("[ALL " + testName + " FINISHED]");
     }
-    @Attachment
+
     public static void captureScreenshotAndLogs() {
         // Захват скриншота и прикрепление к Allure-отчёту
         byte[] screenshotBytes = ((TakesScreenshot) BaseTest.getDriver()).getScreenshotAs(OutputType.BYTES);
