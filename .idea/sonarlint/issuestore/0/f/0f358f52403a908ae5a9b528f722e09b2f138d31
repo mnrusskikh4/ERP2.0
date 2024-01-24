@@ -1,0 +1,27 @@
+
+]
+java:S1192"GDefine a constant instead of duplicating this literal "[Test " 3 times.(ïð¡û
+R
+java:S2629"7Use the built-in formatting to construct this argument.(©½ËÂûÿÿÿÿ
+M
+java:S2629"7Use the built-in formatting to construct this argument.(ïð¡û
+R
+java:S2629!"7Use the built-in formatting to construct this argument.(ŠÆó²øÿÿÿÿ
+R
+java:S2629'"7Use the built-in formatting to construct this argument.(òÃá–ýÿÿÿÿ
+R
+java:S2629."7Use the built-in formatting to construct this argument.(«ù³Žþÿÿÿÿ
+M
+java:S26293"7Use the built-in formatting to construct this argument.(¿¡‡Ö
+\
+java:S3457"AFormat specifiers should be used instead of string concatenation.(©½ËÂûÿÿÿÿ
+W
+java:S3457"AFormat specifiers should be used instead of string concatenation.(ïð¡û
+\
+java:S3457!"AFormat specifiers should be used instead of string concatenation.(ŠÆó²øÿÿÿÿ
+\
+java:S3457'"AFormat specifiers should be used instead of string concatenation.(òÃá–ýÿÿÿÿ
+\
+java:S3457."AFormat specifiers should be used instead of string concatenation.(«ù³Žþÿÿÿÿ
+W
+java:S34573"AFormat specifiers should be used instead of string concatenation.(¿¡‡Ö

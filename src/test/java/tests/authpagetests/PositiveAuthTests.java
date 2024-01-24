@@ -56,7 +56,7 @@ public class PositiveAuthTests extends TestUtilities {
 
     @Step("Переход в кабинет доктора по кнопке логин")
     public void clickLoginButton() {
-        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login"));
+        WebElement logInButtonLocator = BaseTest.getDriver().findElement(By.id("login-btn"));
         logInButtonLocator.click();
         takeScreenshot("Login button pushed");
     }
