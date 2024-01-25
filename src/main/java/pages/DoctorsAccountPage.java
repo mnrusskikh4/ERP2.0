@@ -12,7 +12,8 @@ import java.time.Duration;
 
 public class DoctorsAccountPage extends BasePageObject {
 
-    private By expandMoreIconLocator = By.xpath("//*[contains(@class, 'ml-5')]\n");
+    private By expandMoreIconLocator = By.xpath("//*[contains(@class, 'ml-5')]");
+    private By createOrderButton = By.xpath("//span[@class='v-btn__content' and contains(text(), 'Создать заказ')]");
 
     public DoctorsAccountPage (WebDriver driver, Logger log) {
             super(driver, log);
@@ -35,7 +36,7 @@ public class DoctorsAccountPage extends BasePageObject {
 
     public DoctorsProfilePage clickExpandMoreAndSelectProfile() {
         // Нажимаем на кнопку "expand_more"
-        WebElement expandMoreButton = driver.findElement(By.xpath("//*[contains(@class, 'ml-5')]\n"));
+        WebElement expandMoreButton = driver.findElement(By.xpath("//*[contains(@class, 'ml-5')]"));
         expandMoreButton.click();
 
         // Ожидаем, пока не станет видимым элемент "Профиль" и кликаем по нему
@@ -44,6 +45,12 @@ public class DoctorsAccountPage extends BasePageObject {
         profileOption.click();
 
         return new DoctorsProfilePage(driver, log);
+    }
+
+    public void clickCreateOrder() {
+        // Нажимаем на кнопку "create_order"
+        WebElement createOrderButton = driver.findElement(By.xpath("//span[@class='v-btn__content' and contains(text(), 'Создать заказ')]"));
+        createOrderButton.click();
     }
 
 

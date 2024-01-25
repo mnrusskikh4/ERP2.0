@@ -1,0 +1,13 @@
+
+t
+java:S2293	"YReplace the type specification in this constructor call with the diamond operator ("<>").(Žÿ•™øÿÿÿÿ
+M
+java:S2629"7Use the built-in formatting to construct this argument.(…Ñ¦Õ
+M
+java:S2629""7Use the built-in formatting to construct this argument.(™ïÞÁ
+7
+java:S5164	"Call "remove()" on "driver".(Žÿ•™øÿÿÿÿ
+W
+java:S3457"AFormat specifiers should be used instead of string concatenation.(…Ñ¦Õ
+W
+java:S3457""AFormat specifiers should be used instead of string concatenation.(™ïÞÁ

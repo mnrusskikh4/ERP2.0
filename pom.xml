@@ -64,8 +64,8 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-devtools-v119</artifactId>
-            <version>4.15.0</version>
+            <artifactId>selenium-devtools-v120</artifactId>
+            <version>4.17.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.wiremock/wiremock -->
         <dependency>
@@ -88,6 +88,11 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-clean-plugin</artifactId>
             <version>3.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>login.star-smile</groupId>
+            <artifactId>ERP2.0</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

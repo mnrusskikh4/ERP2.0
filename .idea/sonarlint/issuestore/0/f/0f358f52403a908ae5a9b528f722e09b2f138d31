@@ -1,27 +1,27 @@
 
-]
-java:S1192"GDefine a constant instead of duplicating this literal "[Test " 3 times.(ïğ¡û
-R
-java:S2629"7Use the built-in formatting to construct this argument.(©½ËÂûÿÿÿÿ
-M
-java:S2629"7Use the built-in formatting to construct this argument.(ïğ¡û
-R
-java:S2629!"7Use the built-in formatting to construct this argument.(ŠÆó²øÿÿÿÿ
-R
-java:S2629'"7Use the built-in formatting to construct this argument.(òÃá–ıÿÿÿÿ
-R
-java:S2629."7Use the built-in formatting to construct this argument.(«ù³şÿÿÿÿ
-M
-java:S26293"7Use the built-in formatting to construct this argument.(¿¡‡Ö
-\
-java:S3457"AFormat specifiers should be used instead of string concatenation.(©½ËÂûÿÿÿÿ
-W
-java:S3457"AFormat specifiers should be used instead of string concatenation.(ïğ¡û
-\
-java:S3457!"AFormat specifiers should be used instead of string concatenation.(ŠÆó²øÿÿÿÿ
-\
-java:S3457'"AFormat specifiers should be used instead of string concatenation.(òÃá–ıÿÿÿÿ
-\
-java:S3457."AFormat specifiers should be used instead of string concatenation.(«ù³şÿÿÿÿ
-W
-java:S34573"AFormat specifiers should be used instead of string concatenation.(¿¡‡Ö
+d
+java:S1192"GDefine a constant instead of duplicating this literal "[Test " 3 times.(ïğ¡û8¢­ ÿÓ1
+Y
+java:S2629"7Use the built-in formatting to construct this argument.(©½ËÂûÿÿÿÿ8£­ ÿÓ1
+T
+java:S2629"7Use the built-in formatting to construct this argument.(ïğ¡û8¤­ ÿÓ1
+Y
+java:S2629!"7Use the built-in formatting to construct this argument.(ŠÆó²øÿÿÿÿ8¤­ ÿÓ1
+Y
+java:S2629'"7Use the built-in formatting to construct this argument.(òÃá–ıÿÿÿÿ8¤­ ÿÓ1
+Y
+java:S2629."7Use the built-in formatting to construct this argument.(«ù³şÿÿÿÿ8¤­ ÿÓ1
+T
+java:S26293"7Use the built-in formatting to construct this argument.(¿¡‡Ö8¤­ ÿÓ1
+c
+java:S3457"AFormat specifiers should be used instead of string concatenation.(©½ËÂûÿÿÿÿ8²­ ÿÓ1
+^
+java:S3457"AFormat specifiers should be used instead of string concatenation.(ïğ¡û8³­ ÿÓ1
+c
+java:S3457!"AFormat specifiers should be used instead of string concatenation.(ŠÆó²øÿÿÿÿ8µ­ ÿÓ1
+c
+java:S3457'"AFormat specifiers should be used instead of string concatenation.(òÃá–ıÿÿÿÿ8¶­ ÿÓ1
+c
+java:S3457."AFormat specifiers should be used instead of string concatenation.(«ù³şÿÿÿÿ8¸­ ÿÓ1
+^
+java:S34573"AFormat specifiers should be used instead of string concatenation.(¿¡‡Ö8¹­ ÿÓ1
