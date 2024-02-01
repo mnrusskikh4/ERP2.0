@@ -1,5 +1,5 @@
 
-b
-java:S11174"ERename "createOrderButton" which hides the field declared at line 16.(š•®÷8ÔÙÇˆÔ1
-R
-java:S1068"5Remove this unused "createOrderButton" private field.(ã¬»ø8ÕÙÇˆÔ1
+`
+java:S1155?">Use isEmpty() to check whether the collection is empty or not.(µšÿ­úÿÿÿÿ8Î®¬§Ö1
+:
+java:S2119A"Save and re-use this "Random".(¼ÝÅf8Ð®¬§Ö1

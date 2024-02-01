@@ -42,6 +42,10 @@ public class PositiveAuthTests extends TestUtilities {
         takeScreenshot("Expand More icon is present on the page");
 
         DoctorsProfilePage doctorsProfilePage = doctorsAccountPage.clickExpandMoreAndSelectProfile();
+
+        WebElement firstCheckbox = doctorsProfilePage.getFirstCheckboxElement();
+        scrollToElement(firstCheckbox);
+
         checkCheckboxes(doctorsProfilePage);
     }
 
@@ -49,9 +53,9 @@ public class PositiveAuthTests extends TestUtilities {
     public void enterLoginAndPass() {
         WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
         WebElement usernameElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        usernameElement.sendKeys("awsavichev@gmail.com");
+        usernameElement.sendKeys("DoctorStar2023");
         WebElement passwordElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
-        passwordElement.sendKeys("k@O23");
+        passwordElement.sendKeys("1");
     }
 
     @Step("Переход в кабинет доктора по кнопке логин")

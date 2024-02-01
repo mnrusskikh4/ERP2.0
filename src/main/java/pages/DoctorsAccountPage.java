@@ -9,15 +9,17 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Random;
 
 public class DoctorsAccountPage extends BasePageObject {
 
     private By expandMoreIconLocator = By.xpath("//*[contains(@class, 'ml-5')]");
-    private By createOrderButton = By.xpath("//span[@class='v-btn__content' and contains(text(), 'Создать заказ')]");
+    private By newOrderButtonLocator = By.className("col col-auto");
 
-    public DoctorsAccountPage (WebDriver driver, Logger log) {
-            super(driver, log);
-        }
+    public DoctorsAccountPage(WebDriver driver, Logger log) {
+        super(driver, log);
+    }
 
 
     public boolean isExpandMoreIconPresent() {
@@ -29,6 +31,7 @@ public class DoctorsAccountPage extends BasePageObject {
             return false;
         }
     }
+
     public void waitForPageToLoad() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(expandMoreIconLocator));
@@ -47,10 +50,32 @@ public class DoctorsAccountPage extends BasePageObject {
         return new DoctorsProfilePage(driver, log);
     }
 
-    public void clickCreateOrder() {
-        // Нажимаем на кнопку "create_order"
-        WebElement createOrderButton = driver.findElement(By.xpath("//span[@class='v-btn__content' and contains(text(), 'Создать заказ')]"));
-        createOrderButton.click();
+    public OrderDataPage clickCreateOrder() {
+        // Ожидаем и нажимаем на кнопку "Создать заказ"
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement newOrderButton = wait.until(ExpectedConditions.visibilityOfElementLocated(newOrderButtonLocator));
+        newOrderButton.click();
+
+        // Получить все продукты выпадающего списка
+        List<WebElement> products = driver.findElements(By.className("v-list v-sheet theme--light"));
+
+        // Проверка, что список продуктов не пуст
+        if (products.size() > 0) {
+            // Создать экземпляр Random для генерации случайного числа
+            Random random = new Random();
+
+            // Выбрать случайный индекс из списка продуктов (кроме Виртуального сетапа)
+            int randomIndex;
+            do {
+                randomIndex = random.nextInt(products.size());
+            } while (randomIndex == 5);
+
+            // Выбрать случайный продукт и кликнуть по нему
+            WebElement randomProduct = products.get(randomIndex);
+            randomProduct.click();
+
+        }
+        return new OrderDataPage(driver, log);
     }
 
 
