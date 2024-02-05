@@ -15,7 +15,7 @@ import java.util.Random;
 public class DoctorsAccountPage extends BasePageObject {
 
     private By expandMoreIconLocator = By.xpath("//*[contains(@class, 'ml-5')]");
-    private By newOrderButtonLocator = By.className("col col-auto");
+    private By newOrderButtonLocator = By.cssSelector("button#new-order-btn > span");
 
     public DoctorsAccountPage(WebDriver driver, Logger log) {
         super(driver, log);
@@ -57,7 +57,7 @@ public class DoctorsAccountPage extends BasePageObject {
         newOrderButton.click();
 
         // Получить все продукты выпадающего списка
-        List<WebElement> products = driver.findElements(By.className("v-list v-sheet theme--light"));
+        List<WebElement> products = driver.findElements(By.cssSelector("div.v-menu__content"));
 
         // Проверка, что список продуктов не пуст
         if (products.size() > 0) {

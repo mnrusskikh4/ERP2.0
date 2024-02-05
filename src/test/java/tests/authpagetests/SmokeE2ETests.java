@@ -77,7 +77,7 @@ public class SmokeE2ETests extends TestUtilities {
 
     @Step("Открытие выпадающего списка продуктов")
     public void openProductList() {
-        List<WebElement> products = BaseTest.getDriver().findElements(By.className("v-list v-sheet theme--light"));
+        List<WebElement> products = BaseTest.getDriver().findElements(By.cssSelector("div.v-menu__content"));
         Assert.assertFalse(products.isEmpty(), "Список продуктов пуст.");
         takeScreenshot("Список продуктов открыт");
     }
