@@ -5,6 +5,7 @@ import base.TestUtilities;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,7 @@ import pages.OrderDataPage;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -35,7 +37,7 @@ public class SmokeE2ETests extends TestUtilities {
 
         // Настройка WireMock
         configureFor("localhost", wireMockServer.port()); // Используем автоматически назначенный порт
-        stubFor(get(urlEqualTo("https://openapi_pp2.simplyceph.com/OrderFiles/279802/4271698_pre.png")) // или api/order/saveOrder или api/order/update-3ds-data
+        stubFor(get(urlEqualTo("https://openapi_pp2.simplyceph.com/OrderFiles/279802/4271698_pre.png"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBodyFile("C:\\Users\\admin\\IdeaProjects\\ERP2.0\\src\\test\\resources\\mockfiles\\1Maxillary.stl")));
@@ -43,7 +45,6 @@ public class SmokeE2ETests extends TestUtilities {
 
     @Test
     public void SmokeE2ETest() {
-        // open main page
         AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
         authPage.openPage();
 
@@ -51,12 +52,17 @@ public class SmokeE2ETests extends TestUtilities {
 
         clickLoginButton();
 
-        // Переход на новую страницу и ожидание ее загрузки
         DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
         doctorsAccountPage.waitForPageToLoad();
 
-        // Обнаружение и нажатие кнопки "Создать заказ"
         OrderDataPage orderDataPage = doctorsAccountPage.clickCreateOrder();
+
+        selectProductFromDropdown();
+
+        orderDataPage.waitForPageToLoad();
+
+        checkUrlContains(expectedPartOfUrl);
+
     }
 
     @Step("Внесение валидных данных логин и пароль")
@@ -75,19 +81,31 @@ public class SmokeE2ETests extends TestUtilities {
         takeScreenshot("Login button pushed");
     }
 
-    @Step("Открытие выпадающего списка продуктов")
-    public void openProductList() {
-        List<WebElement> products = BaseTest.getDriver().findElements(By.cssSelector("div.v-menu__content"));
-        Assert.assertFalse(products.isEmpty(), "Список продуктов пуст.");
-        takeScreenshot("Список продуктов открыт");
-    }
-
     @Step("Проверка нахождения на странице Данные Пациента")
     public void checkUrlContains(String expectedPartOfUrl) {
-        String currentUrl = BaseTest.getDriver().getCurrentUrl();
-        Assert.assertTrue(currentUrl.contains(expectedPartOfUrl),
-                "Текущий URL (" + currentUrl + ") не содержит ожидаемую часть: " + expectedPartOfUrl);
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        boolean urlContainsExpectedPart = wait.until(ExpectedConditions.urlContains(expectedPartOfUrl));
+        Assert.assertTrue(urlContainsExpectedPart, "Текущий URL (" + BaseTest.getDriver().getCurrentUrl() + ") не содержит ожидаемую часть: " + expectedPartOfUrl);
         takeScreenshot("Корректный переход на страницу Данные Пациента");
+    }
+
+    @Step("Выбор продукта из выпадающего списка")
+    public void selectProductFromDropdown() {
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        JavascriptExecutor js = (JavascriptExecutor) BaseTest.getDriver();
+
+        List<WebElement> products = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div.v-menu__content")));
+
+        if (!products.isEmpty()) {
+            Random random = new Random();
+            int randomIndex;
+            do {
+                randomIndex = random.nextInt(products.size());
+            } while (randomIndex == 5); // Исключение Виртуального сетапа
+
+            WebElement randomProduct = products.get(randomIndex);
+            js.executeScript("arguments[0].click();", randomProduct);
+        }
     }
 
     @AfterClass
@@ -96,5 +114,4 @@ public class SmokeE2ETests extends TestUtilities {
             wireMockServer.stop();
         }
     }
-
 }

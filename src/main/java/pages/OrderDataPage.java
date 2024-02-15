@@ -8,6 +8,6 @@ public class OrderDataPage extends BasePageObject {
         super(driver, log);
     }
 
-
-
+    public void waitForPageToLoad() {
+    }
 }

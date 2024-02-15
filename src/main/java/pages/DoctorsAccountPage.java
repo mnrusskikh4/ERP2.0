@@ -9,8 +9,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Random;
 
 public class DoctorsAccountPage extends BasePageObject {
 
@@ -51,33 +49,16 @@ public class DoctorsAccountPage extends BasePageObject {
     }
 
     public OrderDataPage clickCreateOrder() {
-        // Ожидаем и нажимаем на кнопку "Создать заказ"
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Ожидаем видимости и нажимаем на кнопку "Создать заказ" обычным способом
         WebElement newOrderButton = wait.until(ExpectedConditions.visibilityOfElementLocated(newOrderButtonLocator));
         newOrderButton.click();
 
-        // Получить все продукты выпадающего списка
-        List<WebElement> products = driver.findElements(By.cssSelector("div.v-menu__content"));
+        // Ожидаем, пока выпадающий список станет видимым
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div.v-menu__content")));
 
-        // Проверка, что список продуктов не пуст
-        if (products.size() > 0) {
-            // Создать экземпляр Random для генерации случайного числа
-            Random random = new Random();
-
-            // Выбрать случайный индекс из списка продуктов (кроме Виртуального сетапа)
-            int randomIndex;
-            do {
-                randomIndex = random.nextInt(products.size());
-            } while (randomIndex == 5);
-
-            // Выбрать случайный продукт и кликнуть по нему
-            WebElement randomProduct = products.get(randomIndex);
-            randomProduct.click();
-
-        }
         return new OrderDataPage(driver, log);
     }
 
-
 }
-
