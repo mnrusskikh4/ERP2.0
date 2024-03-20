@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,7 +16,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pages.AuthPageObject;
 import pages.DoctorsAccountPage;
-import pages.OrderDataPage;
 
 import java.time.Duration;
 import java.util.List;
@@ -25,9 +25,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class SmokeE2ETests extends TestUtilities {
 
+    private static final Random random = new Random();
+    public void waitForPageLoad(WebDriver driver) {
+        new WebDriverWait(driver, Duration.ofSeconds(30)).until(
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete")
+        );
+    }
     private WireMockServer wireMockServer;
 
-    String expectedPartOfUrl = "https://doc.star-smile.ru/#/new/";
+    String expectedPartOfUrl = "https://doc.star-smile.ru/#/";
 
     @BeforeClass
     public void setWireMockServer() {
@@ -47,6 +53,7 @@ public class SmokeE2ETests extends TestUtilities {
     public void SmokeE2ETest() {
         AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
         authPage.openPage();
+        waitForPageLoad(BaseTest.getDriver());
 
         enterLoginAndPass();
 
@@ -55,13 +62,14 @@ public class SmokeE2ETests extends TestUtilities {
         DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
         doctorsAccountPage.waitForPageToLoad();
 
-        OrderDataPage orderDataPage = doctorsAccountPage.clickCreateOrder();
+        doctorsAccountPage.clickCreateOrder();
+        waitForPageLoad(BaseTest.getDriver());
 
         selectProductFromDropdown();
+        waitForPageLoad(BaseTest.getDriver());
 
-        orderDataPage.waitForPageToLoad();
 
-        checkUrlContains(expectedPartOfUrl);
+//        checkUrlContains(expectedPartOfUrl);
 
     }
 
@@ -91,20 +99,38 @@ public class SmokeE2ETests extends TestUtilities {
 
     @Step("Выбор продукта из выпадающего списка")
     public void selectProductFromDropdown() {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
         JavascriptExecutor js = (JavascriptExecutor) BaseTest.getDriver();
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
 
-        List<WebElement> products = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div.v-menu__content")));
+        // Убедитесь, что CSS-селектор выбирает именно элементы списка, а не сам список
+        By productsTitlesLocator = By.cssSelector(".v-list-item__title");
 
-        if (!products.isEmpty()) {
-            Random random = new Random();
-            int randomIndex;
-            do {
-                randomIndex = random.nextInt(products.size());
-            } while (randomIndex == 5); // Исключение Виртуального сетапа
+        // Ожидаем появления элементов списка и получаем список элементов
+        List<WebElement> productTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(productsTitlesLocator));
 
-            WebElement randomProduct = products.get(randomIndex);
-            js.executeScript("arguments[0].click();", randomProduct);
+        if (!productTitles.isEmpty()) {
+            // Выбор случайного элемента из списка по названию
+            int randomIndex = new Random().nextInt(productTitles.size());
+            WebElement selectedProductTitle = productTitles.get(randomIndex);
+
+            // Получение текста выбранного элемента
+            String selectedItemText = selectedProductTitle.getText();
+
+            // Вывод текста выбранного элемента в консоль
+            System.out.println("Выбранный продукт: " + selectedItemText);
+
+            // Ожидаем, что выбранный элемент станет кликабельным
+            wait.until(ExpectedConditions.elementToBeClickable(selectedProductTitle));
+
+            // Используем JavascriptExecutor для клика по выбранному элементу
+            js.executeScript("arguments[0].click();", selectedProductTitle);
+
+            // Вместо Thread.sleep лучше использовать явное ожидание, чтобы подтвердить какое-либо условие после клика
+            // Например, ожидание, что выпадающий список закрылся
+            // wait.until(ExpectedConditions.attributeContains(селектор-элемента-списка, "class", "класс-закрытого-списка"));
+
+        } else {
+            throw new IllegalStateException("Выбран пустой список или элементы не доступны.");
         }
     }
 

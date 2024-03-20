@@ -1,10 +1,7 @@
 package pages;
 
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -48,17 +45,18 @@ public class DoctorsAccountPage extends BasePageObject {
         return new DoctorsProfilePage(driver, log);
     }
 
-    public OrderDataPage clickCreateOrder() {
+    public void clickCreateOrder() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        // Ожидаем видимости и нажимаем на кнопку "Создать заказ" обычным способом
+        // Ожидаем видимости кнопки "Создать заказ"
         WebElement newOrderButton = wait.until(ExpectedConditions.visibilityOfElementLocated(newOrderButtonLocator));
-        newOrderButton.click();
+
+        // Нажимаем на кнопку "Создать заказ" с помощью JavascriptExecutor
+        js.executeScript("arguments[0].click();", newOrderButton);
 
         // Ожидаем, пока выпадающий список станет видимым
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector("div.v-menu__content")));
-
-        return new OrderDataPage(driver, log);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".v-menu__content.theme--light.menuable__content__active")));
     }
 
 }
