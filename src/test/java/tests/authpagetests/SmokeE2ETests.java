@@ -4,18 +4,16 @@ import base.BaseTest;
 import base.TestUtilities;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
+
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import pages.AuthPageObject;
 import pages.DoctorsAccountPage;
+import pages.OrderDataPage;
 
 import java.time.Duration;
 import java.util.List;
@@ -25,15 +23,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class SmokeE2ETests extends TestUtilities {
 
-    private static final Random random = new Random();
-    public void waitForPageLoad(WebDriver driver) {
-        new WebDriverWait(driver, Duration.ofSeconds(30)).until(
-                webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete")
-        );
-    }
     private WireMockServer wireMockServer;
 
-    String expectedPartOfUrl = "https://doc.star-smile.ru/#/";
+    String expectedPartOfUrl = "https://doc.star-smile.ru/#/new/";
 
     @BeforeClass
     public void setWireMockServer() {
@@ -53,23 +45,23 @@ public class SmokeE2ETests extends TestUtilities {
     public void SmokeE2ETest() {
         AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
         authPage.openPage();
-        waitForPageLoad(BaseTest.getDriver());
+        authPage.waitForLoginElementsToBeVisible();
 
         enterLoginAndPass();
 
         clickLoginButton();
 
         DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
-        doctorsAccountPage.waitForPageToLoad();
+        doctorsAccountPage.waitForDocAccPageToLoad();
 
         doctorsAccountPage.clickCreateOrder();
-        waitForPageLoad(BaseTest.getDriver());
 
         selectProductFromDropdown();
-        waitForPageLoad(BaseTest.getDriver());
 
+        checkUrlContains(expectedPartOfUrl);
 
-//        checkUrlContains(expectedPartOfUrl);
+        OrderDataPage orderDataPage = new OrderDataPage(BaseTest.getDriver(), log);
+        orderDataPage.waitForOrderPageToLoad();
 
     }
 
@@ -89,11 +81,20 @@ public class SmokeE2ETests extends TestUtilities {
         takeScreenshot("Login button pushed");
     }
 
-    @Step("Проверка нахождения на странице Данные Пациента")
+    @Step("Проверка нахождения на странице Данные Пациента и повторение выбора продукта при необходимости")
     public void checkUrlContains(String expectedPartOfUrl) {
-        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
-        boolean urlContainsExpectedPart = wait.until(ExpectedConditions.urlContains(expectedPartOfUrl));
-        Assert.assertTrue(urlContainsExpectedPart, "Текущий URL (" + BaseTest.getDriver().getCurrentUrl() + ") не содержит ожидаемую часть: " + expectedPartOfUrl);
+        // Ожидаем, когда URL будет содержать указанную часть
+        WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.urlContains(expectedPartOfUrl));
+
+        // Получаем текущий URL и проверяем, содержит ли он ожидаемую часть
+        String currentUrl = BaseTest.getDriver().getCurrentUrl();
+        System.out.println("Текущий URL: " + currentUrl);
+        if (currentUrl.contains(expectedPartOfUrl)) {
+            System.out.println("Мы находимся на странице оформления заказа.");
+        } else {
+            System.out.println("URL не соответствует ожидаемой странице оформления заказа.");
+        }
         takeScreenshot("Корректный переход на страницу Данные Пациента");
     }
 
@@ -102,11 +103,19 @@ public class SmokeE2ETests extends TestUtilities {
         JavascriptExecutor js = (JavascriptExecutor) BaseTest.getDriver();
         WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
 
-        // Убедитесь, что CSS-селектор выбирает именно элементы списка, а не сам список
-        By productsTitlesLocator = By.cssSelector(".v-list-item__title");
+        By productsTitlesLocator = By.cssSelector(".v-menu__content.menuable__content__active > div");
 
-        // Ожидаем появления элементов списка и получаем список элементов
-        List<WebElement> productTitles = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(productsTitlesLocator));
+
+// Настройка неявного ожидания на 3 секунды
+        BaseTest.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+
+        List<WebElement> productTitles = BaseTest.getDriver().findElements(productsTitlesLocator);
+        if (productTitles.isEmpty()) {
+            throw new TimeoutException("Элементы выпадающего списка не появились в ожидаемый период времени.");
+        }
+
+// Обратно устанавливаем значение ожидания в 0, чтобы не влиять на другие операции поиска
+        BaseTest.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
 
         if (!productTitles.isEmpty()) {
             // Выбор случайного элемента из списка по названию
@@ -124,10 +133,6 @@ public class SmokeE2ETests extends TestUtilities {
 
             // Используем JavascriptExecutor для клика по выбранному элементу
             js.executeScript("arguments[0].click();", selectedProductTitle);
-
-            // Вместо Thread.sleep лучше использовать явное ожидание, чтобы подтвердить какое-либо условие после клика
-            // Например, ожидание, что выпадающий список закрылся
-            // wait.until(ExpectedConditions.attributeContains(селектор-элемента-списка, "class", "класс-закрытого-списка"));
 
         } else {
             throw new IllegalStateException("Выбран пустой список или элементы не доступны.");

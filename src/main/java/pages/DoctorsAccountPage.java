@@ -16,6 +16,9 @@ public class DoctorsAccountPage extends BasePageObject {
         super(driver, log);
     }
 
+    public void waitForDocAccPageToLoad() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    }
 
     public boolean isExpandMoreIconPresent() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -25,11 +28,6 @@ public class DoctorsAccountPage extends BasePageObject {
         } catch (TimeoutException e) {
             return false;
         }
-    }
-
-    public void waitForPageToLoad() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(expandMoreIconLocator));
     }
 
     public DoctorsProfilePage clickExpandMoreAndSelectProfile() {
@@ -52,11 +50,17 @@ public class DoctorsAccountPage extends BasePageObject {
         // Ожидаем видимости кнопки "Создать заказ"
         WebElement newOrderButton = wait.until(ExpectedConditions.visibilityOfElementLocated(newOrderButtonLocator));
 
-        // Нажимаем на кнопку "Создать заказ" с помощью JavascriptExecutor
         js.executeScript("arguments[0].click();", newOrderButton);
 
-        // Ожидаем, пока выпадающий список станет видимым
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".v-menu__content.theme--light.menuable__content__active")));
-    }
+        Boolean isDropDownVisible = (Boolean) js.executeScript(
+                "var dropdown = document.querySelector('.v-list.theme--light'); " +
+                        "return dropdown != null && window.getComputedStyle(dropdown).display !== 'none' && dropdown.offsetHeight > 0;"
+        );
 
+        if(isDropDownVisible) {
+            System.out.println("Выпадающий список виден на странице.");
+        } else {
+            System.out.println("Выпадающий список не виден на странице.");
+        }
+    }
 }

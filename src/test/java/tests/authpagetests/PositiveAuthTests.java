@@ -35,7 +35,7 @@ public class PositiveAuthTests extends TestUtilities {
 
         // Переход на новую страницу и ожидание ее загрузки
         DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
-        doctorsAccountPage.waitForPageToLoad();
+        doctorsAccountPage.waitForDocAccPageToLoad();
 
         checkExpandMoreIcon(doctorsAccountPage);
 
