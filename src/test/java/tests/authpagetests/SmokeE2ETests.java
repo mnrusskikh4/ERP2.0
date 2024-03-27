@@ -5,6 +5,7 @@ import base.TestUtilities;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -100,43 +101,34 @@ public class SmokeE2ETests extends TestUtilities {
 
     @Step("Выбор продукта из выпадающего списка")
     public void selectProductFromDropdown() {
-        JavascriptExecutor js = (JavascriptExecutor) BaseTest.getDriver();
         WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
+        By productsTitlesLocator = By.cssSelector(".v-menu__content.menuable__content__active .v-list-item__title");
 
-        By productsTitlesLocator = By.cssSelector(".v-menu__content.menuable__content__active > div");
+        // Ожидаем, пока выпадающий список полностью загрузится и станет видимым
+        wait.until(ExpectedConditions.visibilityOfElementLocated(productsTitlesLocator));
 
-
-// Настройка неявного ожидания на 3 секунды
-        BaseTest.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-
+        // Находим все элементы списка продуктов
         List<WebElement> productTitles = BaseTest.getDriver().findElements(productsTitlesLocator);
+
+        // Убедимся, что список продуктов не пустой
         if (productTitles.isEmpty()) {
-            throw new TimeoutException("Элементы выпадающего списка не появились в ожидаемый период времени.");
+            throw new NoSuchElementException("Нет продуктов в выпадающем списке.");
         }
 
-// Обратно устанавливаем значение ожидания в 0, чтобы не влиять на другие операции поиска
-        BaseTest.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
+        // Генерируем случайный индекс
+        int randomIndex = new Random().nextInt(productTitles.size());
 
-        if (!productTitles.isEmpty()) {
-            // Выбор случайного элемента из списка по названию
-            int randomIndex = new Random().nextInt(productTitles.size());
-            WebElement selectedProductTitle = productTitles.get(randomIndex);
+        // Получаем случайно выбранный элемент
+        WebElement selectedProductTitle = productTitles.get(randomIndex);
 
-            // Получение текста выбранного элемента
-            String selectedItemText = selectedProductTitle.getText();
+        // Получаем текст элемента до клика
+        String selectedItemText = selectedProductTitle.getText();
 
-            // Вывод текста выбранного элемента в консоль
-            System.out.println("Выбранный продукт: " + selectedItemText);
+        // Кликаем по элементу
+        wait.until(ExpectedConditions.elementToBeClickable(selectedProductTitle)).click();
 
-            // Ожидаем, что выбранный элемент станет кликабельным
-            wait.until(ExpectedConditions.elementToBeClickable(selectedProductTitle));
-
-            // Используем JavascriptExecutor для клика по выбранному элементу
-            js.executeScript("arguments[0].click();", selectedProductTitle);
-
-        } else {
-            throw new IllegalStateException("Выбран пустой список или элементы не доступны.");
-        }
+        // Вывод информации о выбранном продукте
+        System.out.println("Выбранный продукт: " + selectedItemText);
     }
 
     @AfterClass
