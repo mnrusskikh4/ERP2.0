@@ -131,6 +131,31 @@ public class SmokeE2ETests extends TestUtilities {
         System.out.println("Выбранный продукт: " + selectedItemText);
     }
 
+
+    @Step("Генерация фото пациента, взависимости от выбранного пола")
+    public void fillTheFormWithRandomGenderAndGenerateImage() throws Exception {
+        Kandinsky api = new Kandinsky(URL, API_KEY, SECRET_KEY);
+
+        String malePrompt = "Портрет очаровательного ...";
+        String femalePrompt = "Цветное изображение женщины случайной расы, " +
+                "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная или смешанная, " +
+                "с красивой белоснежной улыбкой";
+
+        Random random = new Random();
+        boolean isMale = random.nextBoolean();
+        String selectedPrompt = isMale ? malePrompt : femalePrompt;
+        WebElement selectedGender = isMale ? manradioLocator : womanradioLocator;
+        selectedGender.click(); // Выбор радиокнопки на UI веб-приложения
+
+        // Использование API для генерации изображения
+        String model_id = api.get_model();
+        String generatedImageUuid = api.generate(selectedPrompt, model_id);
+
+        // Здесь может быть логика ожидания завершения генерации и последующая загрузка изображения
+        // Пример:
+        // JsonNode images = api.check_generation(generatedImageUuid);
+        // Path downloadedImagePath = api.downloadImage(images.get(0).asText(), "path/to/save/image.jpg");
+    }
     @AfterClass
     public void teardownWireMockServer() {
         if (wireMockServer != null) {
