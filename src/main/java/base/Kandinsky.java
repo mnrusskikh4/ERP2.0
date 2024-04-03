@@ -24,10 +24,10 @@ public class Kandinsky {
 
     public Kandinsky(String url, String apiKey, String secretKey) {
         this.url = url;
-        this.apiKey = "B0ACDF1FD75E32D32D471EA21260FAFC";
-        this.secretKey = "1A9B248B3EA51441B825F390840599D8";
+        this.apiKey = apiKey;
+        this.secretKey = secretKey;
         this.client = HttpClient.newHttpClient();
-        this.mapper = new ObjectMapper(); // Jackson ObjectMapper
+        this.mapper = new ObjectMapper();
     }
 
     public String get_model() throws Exception {

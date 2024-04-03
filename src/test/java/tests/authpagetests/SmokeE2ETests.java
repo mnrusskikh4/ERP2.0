@@ -1,11 +1,12 @@
 package tests.authpagetests;
 
 import base.BaseTest;
+import base.Kandinsky;
 import base.TestUtilities;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.qameta.allure.Step;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -16,7 +17,11 @@ import pages.AuthPageObject;
 import pages.DoctorsAccountPage;
 import pages.OrderDataPage;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
@@ -25,11 +30,18 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 public class SmokeE2ETests extends TestUtilities {
 
     private WireMockServer wireMockServer;
+    private OrderDataPage orderDataPage;
+    private AuthPageObject authPage;
+    private DoctorsAccountPage doctorsAccountPage;
+
 
     String expectedPartOfUrl = "https://doc.star-smile.ru/#/new/";
 
     @BeforeClass
     public void setWireMockServer() {
+            orderDataPage = new OrderDataPage(getDriver(), log);
+            authPage = new AuthPageObject(getDriver(), log);
+            doctorsAccountPage = new DoctorsAccountPage(getDriver(), log);
         // Инициализация WireMockServer без указания порта
         wireMockServer = new WireMockServer();
         wireMockServer.start();
@@ -63,6 +75,12 @@ public class SmokeE2ETests extends TestUtilities {
 
         OrderDataPage orderDataPage = new OrderDataPage(BaseTest.getDriver(), log);
         orderDataPage.waitForOrderPageToLoad();
+
+        orderDataPage.fillForm();
+
+        orderDataPage.openAndClickToMultiPhoto();
+
+        fillTheFormWithRandomGenderAndGenerateImage();
 
     }
 
@@ -132,29 +150,43 @@ public class SmokeE2ETests extends TestUtilities {
     }
 
 
-    @Step("Генерация фото пациента, взависимости от выбранного пола")
-    public void fillTheFormWithRandomGenderAndGenerateImage() throws Exception {
-        Kandinsky api = new Kandinsky(URL, API_KEY, SECRET_KEY);
+    @Step("Генерация фото пациента, в зависимости от выбранного пола")
+    public void fillTheFormWithRandomGenderAndGenerateImage() {
+        try {
+            Kandinsky api = new Kandinsky(OrderDataPage.URL, OrderDataPage.API_KEY, OrderDataPage.SECRET_KEY);
 
-        String malePrompt = "Портрет очаровательного ...";
-        String femalePrompt = "Цветное изображение женщины случайной расы, " +
-                "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная или смешанная, " +
-                "с красивой белоснежной улыбкой";
+            String malePrompt = "Описание для мужского портрета...";
+            String femalePrompt = "Описание для женского портрета...";
 
-        Random random = new Random();
-        boolean isMale = random.nextBoolean();
-        String selectedPrompt = isMale ? malePrompt : femalePrompt;
-        WebElement selectedGender = isMale ? manradioLocator : womanradioLocator;
-        selectedGender.click(); // Выбор радиокнопки на UI веб-приложения
+            Random random = new Random();
+            boolean isMale = random.nextBoolean();
 
-        // Использование API для генерации изображения
-        String model_id = api.get_model();
-        String generatedImageUuid = api.generate(selectedPrompt, model_id);
+            // Выбор радиокнопки на UI веб-приложения
+            if (isMale) {
+                orderDataPage.clickOnManRadio();
+            } else {
+                orderDataPage.clickOnWomanRadio();
+            }
 
-        // Здесь может быть логика ожидания завершения генерации и последующая загрузка изображения
-        // Пример:
-        // JsonNode images = api.check_generation(generatedImageUuid);
-        // Path downloadedImagePath = api.downloadImage(images.get(0).asText(), "path/to/save/image.jpg");
+            String selectedPrompt = isMale ? malePrompt : femalePrompt;
+            String modelId = api.get_model();
+            String generatedImageUuid = api.generate(selectedPrompt, modelId);
+            JsonNode images = api.check_generation(generatedImageUuid);
+
+            if (images != null && images.has(0)) {
+                String imageUrl = images.get(0).asText();
+
+                // Генерация уникального имени файла для сохранения изображения
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                String uniqueFileName = "image_" + LocalDateTime.now().format(dtf) + ".jpg";
+                Path pathToSave = Paths.get("C:", "Users", "Miha", "IdeaProjects", "ERP2.0", "src", "test", "resources", "avatars", uniqueFileName);
+
+                // Скачивание изображения
+                Path downloadedImagePath = api.downloadImage(imageUrl, pathToSave.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @AfterClass
     public void teardownWireMockServer() {

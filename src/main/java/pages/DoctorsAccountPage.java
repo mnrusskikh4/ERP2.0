@@ -58,9 +58,9 @@ public class DoctorsAccountPage extends BasePageObject {
         );
 
         if(isDropDownVisible) {
-            System.out.println("Выпадающий список виден на странице.");
+            System.out.println("Выпадающий список виден на странице");
         } else {
-            System.out.println("Выпадающий список не виден на странице.");
+            System.out.println("Выпадающий список не виден на странице");
         }
     }
 }
