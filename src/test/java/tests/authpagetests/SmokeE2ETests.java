@@ -33,30 +33,34 @@ public class SmokeE2ETests extends TestUtilities {
     private OrderDataPage orderDataPage;
     private AuthPageObject authPage;
     private DoctorsAccountPage doctorsAccountPage;
+    private Kandinsky api;
 
+    public static final String URL = "https://api-key.fusionbrain.ai/";
+    public static final String API_KEY = "B0ACDF1FD75E32D32D471EA21260FAFC";
+    public static final String SECRET_KEY = "1A9B248B3EA51441B825F390840599D8";
 
+    Kandinsky api = new Kandinsky(URL, API_KEY, SECRET_KEY);
     String expectedPartOfUrl = "https://doc.star-smile.ru/#/new/";
 
     @BeforeClass
+    api = new Kandinsky(URL, API_KEY, SECRET_KEY);
     public void setWireMockServer() {
-            orderDataPage = new OrderDataPage(getDriver(), log);
-            authPage = new AuthPageObject(getDriver(), log);
-            doctorsAccountPage = new DoctorsAccountPage(getDriver(), log);
-        // Инициализация WireMockServer без указания порта
+        // Инициализация и настройка WireMockServer
         wireMockServer = new WireMockServer();
         wireMockServer.start();
-
-        // Настройка WireMock
         configureFor("localhost", wireMockServer.port()); // Используем автоматически назначенный порт
+
+        // Настройка ответа от WireMock
         stubFor(get(urlEqualTo("https://openapi_pp2.simplyceph.com/OrderFiles/279802/4271698_pre.png"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withBodyFile("C:\\Users\\admin\\IdeaProjects\\ERP2.0\\src\\test\\resources\\mockfiles\\1Maxillary.stl")));
+                        .withBodyFile("mockfiles/1Maxillary.stl")));
     }
 
     @Test
     public void SmokeE2ETest() {
-        AuthPageObject authPage = new AuthPageObject(BaseTest.getDriver(), log);
+
+        authPage = new AuthPageObject(getDriver(), log);
         authPage.openPage();
         authPage.waitForLoginElementsToBeVisible();
 
@@ -64,7 +68,7 @@ public class SmokeE2ETests extends TestUtilities {
 
         clickLoginButton();
 
-        DoctorsAccountPage doctorsAccountPage = new DoctorsAccountPage(BaseTest.getDriver(), log);
+        doctorsAccountPage = new DoctorsAccountPage(getDriver(), log);
         doctorsAccountPage.waitForDocAccPageToLoad();
 
         doctorsAccountPage.clickCreateOrder();
@@ -73,12 +77,14 @@ public class SmokeE2ETests extends TestUtilities {
 
         checkUrlContains(expectedPartOfUrl);
 
-        OrderDataPage orderDataPage = new OrderDataPage(BaseTest.getDriver(), log);
+        orderDataPage = new OrderDataPage(getDriver(), log);
         orderDataPage.waitForOrderPageToLoad();
 
         orderDataPage.fillForm();
+        takeScreenshot("fillFormDone");
 
         orderDataPage.openAndClickToMultiPhoto();
+        takeScreenshot("multiPhotoOn");
 
         fillTheFormWithRandomGenderAndGenerateImage();
 
@@ -153,15 +159,16 @@ public class SmokeE2ETests extends TestUtilities {
     @Step("Генерация фото пациента, в зависимости от выбранного пола")
     public void fillTheFormWithRandomGenderAndGenerateImage() {
         try {
-            Kandinsky api = new Kandinsky(OrderDataPage.URL, OrderDataPage.API_KEY, OrderDataPage.SECRET_KEY);
-
-            String malePrompt = "Описание для мужского портрета...";
-            String femalePrompt = "Описание для женского портрета...";
+            String malePrompt = "Цветное изображение мужчины случайной расы, " +
+                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
+                    "с красивой белоснежной улыбкой";
+            String femalePrompt = "Цветное изображение женщины случайной расы, " +
+                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
+                    "с красивой белоснежной улыбкой";
 
             Random random = new Random();
             boolean isMale = random.nextBoolean();
 
-            // Выбор радиокнопки на UI веб-приложения
             if (isMale) {
                 orderDataPage.clickOnManRadio();
             } else {
@@ -169,9 +176,12 @@ public class SmokeE2ETests extends TestUtilities {
             }
 
             String selectedPrompt = isMale ? malePrompt : femalePrompt;
-            String modelId = api.get_model();
-            String generatedImageUuid = api.generate(selectedPrompt, modelId);
-            JsonNode images = api.check_generation(generatedImageUuid);
+            String modelId = api.get_model();  // Убраны параметры, используем поля класса
+            String generatedImageUuid = api.generate(selectedPrompt, modelId);  // Убраны параметры, используем поля класса
+            JsonNode images = null;
+            if (generatedImageUuid != null) {
+                images = api.check_generation(generatedImageUuid);  // Убраны параметры, используем поля класса
+            }
 
             if (images != null && images.has(0)) {
                 String imageUrl = images.get(0).asText();
@@ -183,15 +193,27 @@ public class SmokeE2ETests extends TestUtilities {
 
                 // Скачивание изображения
                 Path downloadedImagePath = api.downloadImage(imageUrl, pathToSave.toString());
+
+                By inputFileLocator = By.xpath("(//*[@id='files'])[1]");
+
+                WebDriverWait wait = new WebDriverWait(driver.get(), Duration.ofSeconds(10));
+                WebElement fileInputElement = wait.until(ExpectedConditions.elementToBeClickable(inputFileLocator));
+                fileInputElement.sendKeys(downloadedImagePath.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void teardownWireMockServer() {
         if (wireMockServer != null) {
-            wireMockServer.stop();
+            try {
+                wireMockServer.stop();
+                System.out.println("WireMockServer был успешно остановлен");
+            } catch (Exception e) {
+                System.err.println("Произошла ошибка при попытке остановить WireMockServer: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 }

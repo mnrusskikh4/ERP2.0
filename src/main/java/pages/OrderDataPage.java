@@ -1,6 +1,6 @@
 package pages;
 
-import base.Kandinsky;
+
 import com.github.javafaker.Faker;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -18,13 +18,13 @@ import java.util.Random;
 
 public class OrderDataPage extends BasePageObject {
 
-    private WebDriverWait wait;
+    private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
     private final By sendButtonLocator = By.id("send-btn");
 
     private By photoTabLocator = By.xpath("(//div[contains(@class, 'v-list-item__content')])[3]");
 
-    private By multiPhotoLocator = By.xpath("//input[@id='multiplePhoto' and @type='checkbox' and @aria-checked='false' and @role='switch']");
+    private By multiPhotoLocator = By.cssSelector(".v-input--selection-controls__ripple");
 
     private By surnameLocator = By.id("fe-0-0");
     private By nameLocator = By.id("fe-0-1");
@@ -32,17 +32,11 @@ public class OrderDataPage extends BasePageObject {
     private By birthdateLocator = By.xpath("(//div[contains(@class, 'v-text-field__slot')])[4]");
     private By phoneLocator = By.id("fe-0-140");
     private By emailLocator = By.id("fe-0-141");
-    public By manradioLocator = By.id("fei-0-3-0");
-    public By womanradioLocator = By.id("fei-0-3-1");
-    public static final String URL = "https://api-key.fusionbrain.ai/";
-    public static final String API_KEY = "B0ACDF1FD75E32D32D471EA21260FAFC";
-    public static final String SECRET_KEY = "1A9B248B3EA51441B825F390840599D8";
-
-    Kandinsky api = new Kandinsky(URL, API_KEY, SECRET_KEY);
+    public By manradioLocator = By.xpath("(//*[contains(@class, 'v-input--selection-controls__input')])[1]");
+    public By womanradioLocator = By.xpath("(//*[contains(@class, 'v-input--selection-controls__input')])[2]");
 
     public OrderDataPage(WebDriver driver, Logger log) {
         super(driver, log);
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     public void waitForOrderPageToLoad() {
@@ -100,24 +94,42 @@ public class OrderDataPage extends BasePageObject {
     }
 
     public void clickOnManRadio() {
-        WebElement element = driver.findElement(manradioLocator);
-        JavascriptExecutor executor = (JavascriptExecutor)driver;
-        executor.executeScript("arguments[0].click();", element);
+        if (driver == null) {
+            log.error("WebDriver не проинициализирован");
+            throw new IllegalStateException("WebDriver не проинициализирован");
+        }
+        try {
+            WebElement element = driver.findElement(manradioLocator);
+            JavascriptExecutor executor = (JavascriptExecutor) driver;
+            executor.executeScript("arguments[0].click();", element);
+        } catch (Exception e) {
+            log.error("Не удалось нажать на manradioLocator: " + e.getMessage());
+        }
     }
 
     public void clickOnWomanRadio() {
-        WebElement element = driver.findElement(womanradioLocator);
-        JavascriptExecutor executor = (JavascriptExecutor)driver;
-        executor.executeScript("arguments[0].click();", element);
+        if (driver == null) {
+            log.error("WebDriver не проинициализирован");
+            throw new IllegalStateException("WebDriver не проинициализирован");
+        }
+        try {
+            WebElement element = driver.findElement(womanradioLocator);
+            JavascriptExecutor executor = (JavascriptExecutor) driver;
+            executor.executeScript("arguments[0].click();", element);
+        } catch (Exception e) {
+            log.error("Не удалось нажать на womanradioLocator: " + e.getMessage());
+        }
     }
 
     public void openAndClickToMultiPhoto() {
         WebElement photoTab = wait.until(ExpectedConditions.elementToBeClickable(photoTabLocator));
         photoTab.click();
 
-        WebElement multiPhoto = wait.until(ExpectedConditions.elementToBeClickable(multiPhotoLocator));
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        WebElement multiPhoto = wait.until(ExpectedConditions.visibilityOfElementLocated(multiPhotoLocator));
+        wait.until(ExpectedConditions.elementToBeClickable(multiPhotoLocator));
         jsExecutor.executeScript("arguments[0].click();", multiPhoto);
+
     }
 }
 

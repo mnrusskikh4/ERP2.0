@@ -1,0 +1,1 @@
+[[2024-04-04T10:10:02.186Z] [SEVERE] https://doc.star-smile.ru/favicon.ico - Failed to load resource: the server responded with a status of 404 ()]

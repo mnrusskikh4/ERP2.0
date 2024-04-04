@@ -6,7 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 
 public class BrowserDriverFactory {
-    private ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
+    private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
     private String browser;
 
     private Logger log;
