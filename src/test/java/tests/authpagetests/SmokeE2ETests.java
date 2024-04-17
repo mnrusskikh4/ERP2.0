@@ -33,17 +33,15 @@ public class SmokeE2ETests extends TestUtilities {
     private OrderDataPage orderDataPage;
     private AuthPageObject authPage;
     private DoctorsAccountPage doctorsAccountPage;
-    private Kandinsky api;
 
     public static final String URL = "https://api-key.fusionbrain.ai/";
-    public static final String API_KEY = "B0ACDF1FD75E32D32D471EA21260FAFC";
-    public static final String SECRET_KEY = "1A9B248B3EA51441B825F390840599D8";
+    public static final String API_KEY = "36D1D1E2FE68A66A1D1C7D99E8D1C228";
+    public static final String SECRET_KEY = "9946C527F1BAF8208809A3D763C6973A";
 
     Kandinsky api = new Kandinsky(URL, API_KEY, SECRET_KEY);
     String expectedPartOfUrl = "https://doc.star-smile.ru/#/new/";
 
     @BeforeClass
-    api = new Kandinsky(URL, API_KEY, SECRET_KEY);
     public void setWireMockServer() {
         // Инициализация и настройка WireMockServer
         wireMockServer = new WireMockServer();
@@ -86,7 +84,7 @@ public class SmokeE2ETests extends TestUtilities {
         orderDataPage.openAndClickToMultiPhoto();
         takeScreenshot("multiPhotoOn");
 
-        fillTheFormWithRandomGenderAndGenerateImage();
+//        fillTheFormWithRandomGenderAndGenerateImage();
 
     }
 
@@ -156,54 +154,54 @@ public class SmokeE2ETests extends TestUtilities {
     }
 
 
-    @Step("Генерация фото пациента, в зависимости от выбранного пола")
-    public void fillTheFormWithRandomGenderAndGenerateImage() {
-        try {
-            String malePrompt = "Цветное изображение мужчины случайной расы, " +
-                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
-                    "с красивой белоснежной улыбкой";
-            String femalePrompt = "Цветное изображение женщины случайной расы, " +
-                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
-                    "с красивой белоснежной улыбкой";
-
-            Random random = new Random();
-            boolean isMale = random.nextBoolean();
-
-            if (isMale) {
-                orderDataPage.clickOnManRadio();
-            } else {
-                orderDataPage.clickOnWomanRadio();
-            }
-
-            String selectedPrompt = isMale ? malePrompt : femalePrompt;
-            String modelId = api.get_model();  // Убраны параметры, используем поля класса
-            String generatedImageUuid = api.generate(selectedPrompt, modelId);  // Убраны параметры, используем поля класса
-            JsonNode images = null;
-            if (generatedImageUuid != null) {
-                images = api.check_generation(generatedImageUuid);  // Убраны параметры, используем поля класса
-            }
-
-            if (images != null && images.has(0)) {
-                String imageUrl = images.get(0).asText();
-
-                // Генерация уникального имени файла для сохранения изображения
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-                String uniqueFileName = "image_" + LocalDateTime.now().format(dtf) + ".jpg";
-                Path pathToSave = Paths.get("C:", "Users", "Miha", "IdeaProjects", "ERP2.0", "src", "test", "resources", "avatars", uniqueFileName);
-
-                // Скачивание изображения
-                Path downloadedImagePath = api.downloadImage(imageUrl, pathToSave.toString());
-
-                By inputFileLocator = By.xpath("(//*[@id='files'])[1]");
-
-                WebDriverWait wait = new WebDriverWait(driver.get(), Duration.ofSeconds(10));
-                WebElement fileInputElement = wait.until(ExpectedConditions.elementToBeClickable(inputFileLocator));
-                fileInputElement.sendKeys(downloadedImagePath.toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Step("Генерация фото пациента, в зависимости от выбранного пола")
+//    public void fillTheFormWithRandomGenderAndGenerateImage() {
+//        try {
+//            String malePrompt = "Цветное изображение мужчины случайной расы, " +
+//                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
+//                    "с красивой белоснежной улыбкой";
+//            String femalePrompt = "Цветное изображение женщины случайной расы, " +
+//                    "выбери строго одну из: негроидная или европеоидная или монголоидная или американоидная или австралоидная, " +
+//                    "с красивой белоснежной улыбкой";
+//
+//            Random random = new Random();
+//            boolean isMale = random.nextBoolean();
+//
+//            if (isMale) {
+//                orderDataPage.clickOnManRadio();
+//            } else {
+//                orderDataPage.clickOnWomanRadio();
+//            }
+//
+//            String selectedPrompt = isMale ? malePrompt : femalePrompt;
+//            String modelId = api.get_model();  // Убраны параметры, используем поля класса
+//            String generatedImageUuid = api.generate(selectedPrompt, modelId);  // Убраны параметры, используем поля класса
+//            JsonNode images = null;
+//            if (generatedImageUuid != null) {
+//                images = api.check_generation(generatedImageUuid);  // Убраны параметры, используем поля класса
+//            }
+//
+//            if (images != null && images.has(0)) {
+//                String imageUrl = images.get(0).asText();
+//
+//                // Генерация уникального имени файла для сохранения изображения
+//                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+//                String uniqueFileName = "image_" + LocalDateTime.now().format(dtf) + ".jpg";
+//                Path pathToSave = Paths.get("C:", "Users", "Miha", "IdeaProjects", "ERP2.0", "src", "test", "resources", "avatars", uniqueFileName);
+//
+//                // Скачивание изображения
+//                Path downloadedImagePath = api.downloadImage(imageUrl, pathToSave.toString());
+//
+//                By inputFileLocator = By.xpath("(//*[@id='files'])[1]");
+//
+//                WebDriverWait wait = new WebDriverWait(driver.get(), Duration.ofSeconds(10));
+//                WebElement fileInputElement = wait.until(ExpectedConditions.elementToBeClickable(inputFileLocator));
+//                fileInputElement.sendKeys(downloadedImagePath.toString());
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
     @AfterClass(alwaysRun = true)
     public void teardownWireMockServer() {
         if (wireMockServer != null) {

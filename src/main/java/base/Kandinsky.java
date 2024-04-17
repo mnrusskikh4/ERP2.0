@@ -7,7 +7,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 
@@ -24,7 +23,7 @@ public class Kandinsky {
         this.secretKey = secretKey;
         this.client = HttpClient.newHttpClient();
         this.mapper = new ObjectMapper();
-    }
+        }
 
     public String get_model() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -37,13 +36,18 @@ public class Kandinsky {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode models = mapper.readTree(response.body());
-        return models.get(0).get("id").asText();
+
+        if (models.isArray() && models.size() > 0) {
+            return models.get(0).get("id").asText();
+        } else {
+            throw new Exception("No models received from API, response was: " + response.body());
+        }
     }
 
     public String generate(String prompt, String modelId) throws Exception {
         JsonNode params = mapper.createObjectNode()
                 .put("type", "GENERATE")
-                .put("numImages", 1)
+                // .put("numImages", 1) // Removed: "numImages" is not present in documentation JSON examples.
                 .put("width", 1024)
                 .put("height", 1024)
                 .set("generateParams", mapper.createObjectNode().put("query", prompt));
@@ -52,14 +56,24 @@ public class Kandinsky {
                 .uri(URI.create(url + "key/api/v1/text2image/run"))
                 .timeout(Duration.ofMinutes(1))
                 .header("Content-Type", "application/json")
-                .header("X-Key", "Key " + apiKey)
-                .header("X-Secret", "Secret " + secretKey)
+                .header("X-Key", apiKey)
+                .header("X-Secret", secretKey)
                 .POST(HttpRequest.BodyPublishers.ofString(params.toString()))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        JsonNode responseData = mapper.readTree(response.body());
-        return responseData.get("uuid").asText();
+        // Проверка на корректность HTTP статуса
+        if (response.statusCode() == 200) {
+            JsonNode responseData = mapper.readTree(response.body());
+            if (responseData.hasNonNull("uuid")) {
+                return responseData.get("uuid").asText();
+            } else {
+                throw new Exception("Response JSON does not contain the 'uuid' field.");
+            }
+        } else {
+            // Обработка HTTP ошибок согласно API
+            throw new Exception("HTTP error occurred: " + response.statusCode());
+        }
     }
 
     public JsonNode check_generation(String requestId) throws Exception {
@@ -67,8 +81,8 @@ public class Kandinsky {
         for (int attempts = 0; attempts < 10; attempts++) {
             HttpRequest request = HttpRequest.newBuilder(uri)
                     .timeout(Duration.ofMinutes(1))
-                    .header("X-Key", "Key " + apiKey)
-                    .header("X-Secret", "Secret " + secretKey)
+                    .header("X-Key", apiKey)
+                    .header("X-Secret", secretKey)
                     .GET()
                     .build();
 
