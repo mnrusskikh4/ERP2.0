@@ -45,12 +45,9 @@ public class OrderDataPage extends BasePageObject {
         System.out.println("Страница Оформление заказа загружена");
     }
 
-    public void fillForm() {
-
-        // Создание экземпляра Faker с русской локализацией
+    public boolean fillForm() {
         Faker faker = new Faker(new Locale("ru"));
 
-        // Генерация данных имя, фамилия, e-mail, мобильный телефон, дата рождения
         String surnameGenerated = faker.name().lastName();
         WebElement surnameField = wait.until(ExpectedConditions.visibilityOfElementLocated(surnameLocator));
         surnameField.sendKeys(surnameGenerated);
@@ -71,26 +68,23 @@ public class OrderDataPage extends BasePageObject {
 
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String birthdateGenerated = faker.date().birthday().toInstant()
-                .atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
+        String birthdateGenerated = faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().format(formatter);
         WebElement birthdateField = wait.until(ExpectedConditions.visibilityOfElementLocated(birthdateLocator));
         wait.until(ExpectedConditions.elementToBeClickable(birthdateLocator));
         jsExecutor.executeScript("arguments[0].value=arguments[1];", birthdateField, birthdateGenerated);
-        String valueInField = birthdateField.getAttribute("value");
-        System.out.println("Значение введенной даты рождения: " + valueInField);
 
         String middleName = "Автотест";
         WebElement middlenameField = wait.until(ExpectedConditions.visibilityOfElementLocated(middlenameLocator));
         middlenameField.sendKeys(middleName);
 
-        // Рандомно выбираем пол и кликаем по соответствующей радиокнопке
         Random random = new Random();
-        if (random.nextBoolean()) {
+        boolean isMale = random.nextBoolean();
+        if (isMale) {
             clickOnManRadio();
         } else {
             clickOnWomanRadio();
         }
-
+        return isMale;
     }
 
     public void clickOnManRadio() {
@@ -129,7 +123,25 @@ public class OrderDataPage extends BasePageObject {
         WebElement multiPhoto = wait.until(ExpectedConditions.visibilityOfElementLocated(multiPhotoLocator));
         wait.until(ExpectedConditions.elementToBeClickable(multiPhotoLocator));
         jsExecutor.executeScript("arguments[0].click();", multiPhoto);
+    }
 
+    public void uploadRandomGenderAvatar(boolean isMale) {
+        By fileInputLocator = By.id("files");
+
+        WebElement fileInput = driver.findElement(fileInputLocator);
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+//        js.executeScript("arguments[0].style.display='block';", fileInput);
+
+        String genderPrefix = isMale ? "M" : "W";
+        Random random = new Random();
+        int photoNumber = random.nextInt(5) + 1; // номера фотографий от 1 до 5
+        System.out.println("Выбранное фото: " + photoNumber);
+        String avatarFilePath = "C:\\Users\\Miha\\IdeaProjects\\ERP2.0\\src\\test\\resources\\avatars\\" + genderPrefix + photoNumber + ".png";
+
+        fileInput.sendKeys(avatarFilePath);
+
+//        js.executeScript("arguments[0].style.display='none';", fileInput);
     }
 }
 

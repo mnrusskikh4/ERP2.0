@@ -78,11 +78,14 @@ public class SmokeE2ETests extends TestUtilities {
         orderDataPage = new OrderDataPage(getDriver(), log);
         orderDataPage.waitForOrderPageToLoad();
 
-        orderDataPage.fillForm();
+        boolean isMale = orderDataPage.fillForm();
         takeScreenshot("fillFormDone");
 
         orderDataPage.openAndClickToMultiPhoto();
         takeScreenshot("multiPhotoOn");
+
+        orderDataPage.uploadRandomGenderAvatar(isMale);
+
 
 //        fillTheFormWithRandomGenderAndGenerateImage();
 
@@ -114,9 +117,9 @@ public class SmokeE2ETests extends TestUtilities {
         String currentUrl = BaseTest.getDriver().getCurrentUrl();
         System.out.println("Текущий URL: " + currentUrl);
         if (currentUrl.contains(expectedPartOfUrl)) {
-            System.out.println("Мы находимся на странице оформления заказа.");
+            System.out.println("Мы находимся на странице оформления заказа");
         } else {
-            System.out.println("URL не соответствует ожидаемой странице оформления заказа.");
+            System.out.println("URL не соответствует ожидаемой странице оформления заказа");
         }
         takeScreenshot("Корректный переход на страницу Данные Пациента");
     }
@@ -134,7 +137,7 @@ public class SmokeE2ETests extends TestUtilities {
 
         // Убедимся, что список продуктов не пустой
         if (productTitles.isEmpty()) {
-            throw new NoSuchElementException("Нет продуктов в выпадающем списке.");
+            throw new NoSuchElementException("Нет продуктов в выпадающем списке");
         }
 
         // Генерируем случайный индекс
