@@ -53,9 +53,9 @@ public class PositiveAuthTests extends TestUtilities {
     public void enterLoginAndPass() {
         WebDriverWait wait = new WebDriverWait(BaseTest.getDriver(), Duration.ofSeconds(10));
         WebElement usernameElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        usernameElement.sendKeys("DoctorStar2023");
+        usernameElement.sendKeys("***");
         WebElement passwordElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("password")));
-        passwordElement.sendKeys("1");
+        passwordElement.sendKeys("***");
     }
 
     @Step("Переход в кабинет доктора по кнопке логин")
